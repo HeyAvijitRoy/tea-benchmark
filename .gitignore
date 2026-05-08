@@ -1,0 +1,28 @@
+# Generated outputs — do not commit
+results/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+env/
+.env/
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Editor artifacts
+.vscode/
+.idea/
+*.swp
+
+# HuggingFace model cache (large, should not be committed)
+.cache/
+
+.gsheet-cache/
