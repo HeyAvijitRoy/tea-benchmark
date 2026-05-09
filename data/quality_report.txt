@@ -1,0 +1,57 @@
+============================================================
+TEA BENCHMARK — BENGALI TRANSLATION QUALITY REPORT
+============================================================
+
+Thresholds applied:
+  clean            : bn_ratio >= 0.75
+  mixed            : 0.4 <= bn_ratio < 0.75
+  english_retained : bn_ratio < 0.4
+
+── Overall Distribution ──────────────────────────────
+  clean               :  60 items  (85.7%)
+  mixed               :   9 items  (12.9%)
+  english_retained    :   1 items  (1.4%)
+  TOTAL               :  70 items
+
+── Per-Tier Breakdown ────────────────────────────────
+
+  T1 (20 items):
+    clean               :  10  (50.0%)
+    mixed               :   9  (45.0%)
+    english_retained    :   1  (5.0%)
+
+  T2 (30 items):
+    clean               :  30  (100.0%)
+    mixed               :   0  (0.0%)
+    english_retained    :   0  (0.0%)
+
+  T3 (20 items):
+    clean               :  20  (100.0%)
+    mixed               :   0  (0.0%)
+    english_retained    :   0  (0.0%)
+
+── Items Excluded from Clean-Only Analysis ──────────
+  Total flagged (mixed + english_retained): 10
+
+  Key        Tier   Quality               Ratio  Bengali text (first 60 chars)
+  --------- ----- ------------------- ------  ----------------------------------------
+  T1-11      T1     english_retained      0.000  KeyError: 'name'
+  T1-12      T1     mixed                 0.452  ZeroDivisionError: শূন্য দ্বারা ভাগ
+  T1-16      T1     mixed                 0.542  AttributeError: 'NoneType' অবজেক্টের 'split' নামক কোনো অ্যাট
+  T1-17      T1     mixed                 0.582  AttributeError: 'int' অবজেক্টের 'append' নামক কোনো অ্যাট্রিব
+  T1-05      T1     mixed                 0.625  TypeError: str এর সাথে শুধুমাত্র str যুক্ত করা যায় (int নয়
+  T1-07      T1     mixed                 0.643  NameError: 'x' নামটি সংজ্ঞায়িত নয়
+  T1-06      T1     mixed                 0.659  TypeError: + এর জন্য অসমর্থিত অপারেন্ড টাইপ: 'int' এবং 'str'
+  T1-14      T1     mixed                 0.675  ValueError: 10 ভিত্তিক int() এর জন্য আক্ষরিক মান অবৈধ
+  T1-10      T1     mixed                 0.677  IndexError: তালিকার সূচক সীমার বাইরে
+  T1-08      T1     mixed                 0.746  UnboundLocalError: অ্যাসাইনমেন্টের আগে লোকাল ভেরিয়েবল রেফার
+
+── Ratio Statistics ─────────────────────────────────
+  Mean bn_ratio  : 0.900
+  Median bn_ratio: 0.955
+  Min bn_ratio   : 0.000  (T1-11)
+  Max bn_ratio   : 1.000  (T1-01)
+
+============================================================
+End of report
+============================================================
