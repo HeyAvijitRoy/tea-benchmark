@@ -80,7 +80,7 @@ tea-benchmark/
 │   ├── acm_table.csv             # API Cost Multiplier table
 │   └── ecw_table.csv             # Effective Context Window table
 ├── scripts/
-│   ├── 01_quality_chec.py        # Bengali translation quality classification
+│   ├── 01_quality_check.py       # Bengali translation quality classification
 │   └── 02_tokenize.py            # Tokenization pipeline
 ├── requirements.txt              # Python dependencies
 ├── RUNBOOK.md                    # Full step-by-step operational guide
@@ -101,7 +101,7 @@ source .venv/bin/activate        # macOS / Linux
 pip install -r requirements.txt
 
 # 3. Run Bengali quality classification (generates tea_corpus_flagged.csv)
-python scripts/01_quality_chec.py
+python scripts/01_quality_check.py
 
 # 4. Run tokenization pipeline (generates all results/)
 python scripts/02_tokenize.py

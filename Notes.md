@@ -14,7 +14,7 @@
 
 **Bengali quality check (Step 1)**
 
-Ran `scripts/01_quality_chec.py` against `data/tea_corpus.csv` (70 items, 6 language columns). The script computes the ratio of Bengali Unicode characters (U+0980–U+09FF) to total alphabetic characters and classifies each item:
+Ran `scripts/01_quality_check.py` against `data/tea_corpus.csv` (70 items, 6 language columns). The script computes the ratio of Bengali Unicode characters (U+0980–U+09FF) to total alphabetic characters and classifies each item:
 
 - `clean` (bn_ratio ≥ 0.75): 58 items — 82.9%
 - `mixed` (0.40–0.75): 11 items — 15.7%

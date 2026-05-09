@@ -12,7 +12,7 @@ This runbook is the single source of truth for reproducing every pipeline step f
 1. [Prerequisites](#1-prerequisites)
 2. [Repository Layout](#2-repository-layout)
 3. [Environment Setup](#3-environment-setup)
-4. [Step 1 — Bengali Quality Check (`01_quality_chec.py`)](#4-step-1--bengali-quality-check)
+4. [Step 1 — Bengali Quality Check (`01_quality_check.py`)](#4-step-1--bengali-quality-check)
 5. [Step 2 — Tokenization Pipeline (`02_tokenize.py`)](#5-step-2--tokenization-pipeline)
 6. [Output File Reference](#6-output-file-reference)
 7. [Interpreting the Results](#7-interpreting-the-results)
@@ -48,7 +48,7 @@ tea-benchmark/
 │   ├── acm_table.csv
 │   └── ecw_table.csv
 ├── scripts/
-│   ├── 01_quality_chec.py        # Step 1: Bengali quality classification
+│   ├── 01_quality_check.py        # Step 1: Bengali quality classification
 │   └── 02_tokenize.py            # Step 2: Tokenization pipeline
 ├── requirements.txt
 ├── README.md
@@ -124,7 +124,7 @@ tqdm==4.67.3
 
 ## 4. Step 1 — Bengali Quality Check
 
-**Script:** `scripts/01_quality_chec.py`
+**Script:** `scripts/01_quality_check.py`
 **Input:** `data/tea_corpus.csv`
 **Outputs:** `data/tea_corpus_flagged.csv`, `data/quality_report.txt`
 
@@ -143,7 +143,7 @@ These labels drive the `clean_only` sensitivity subset in Step 2.
 ### How to run
 
 ```bash
-python scripts/01_quality_chec.py
+python scripts/01_quality_check.py
 ```
 
 Expected runtime: **< 5 seconds** (pure Python, no downloads).
@@ -456,7 +456,7 @@ python -c "from transformers import AutoTokenizer; AutoTokenizer.from_pretrained
 You must run Step 1 before Step 2:
 
 ```bash
-python scripts/01_quality_chec.py
+python scripts/01_quality_check.py
 python scripts/02_tokenize.py
 ```
 
@@ -470,7 +470,7 @@ The source CSV `data/tea_corpus.csv` contains two trailing unnamed columns. Both
 source .venv/bin/activate
 rm -f data/tea_corpus_flagged.csv data/quality_report.txt
 rm -rf results/
-python scripts/01_quality_chec.py
+python scripts/01_quality_check.py
 python scripts/02_tokenize.py
 ```
 
