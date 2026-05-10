@@ -1,6 +1,6 @@
 # TEA Benchmark Runbook
 
-This runbook explains how to reproduce the Tokenization Equity Audit (TEA) from a clean checkout. The artifact measures tokenization overhead across languages for a 70-item Python debugging and tutoring corpus.
+This runbook explains how to reproduce the Tokenization Equity Audit (TEA) from a clean checkout. The artifact measures tokenization overhead across languages for a 120-item Python debugging and tutoring corpus.
 
 The runbook is intentionally anonymous. It does not include author names, institutions, compute allocations, local machine paths, or internal development history.
 
@@ -139,12 +139,12 @@ python scripts/02_tokenize.py
 | `qwen2.5_7b` | `Qwen/Qwen2.5-7B` through Hugging Face `AutoTokenizer` |
 | `mistral_7b_v0.1` | `mistralai/Mistral-7B-v0.1` through Hugging Face `AutoTokenizer` |
 
-The script tokenizes all 70 items across all six languages and all three tokenizers.
+The script tokenizes all items across all six languages and all three tokenizers.
 
-Expected total tokenizer rows:
+Expected tokenizer rows:
 
 ```text
-70 items × 6 languages × 3 tokenizers = 1,260 rows
+120 items × 6 languages × 3 tokenizers = 2,160 rows
 ```
 
 ---

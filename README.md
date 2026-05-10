@@ -21,7 +21,7 @@
   <a href="#benchmark-summary">Benchmark Summary</a> •
   <a href="#repository-structure">Repository Structure</a> •
   <a href="#reproducibility">Reproducibility</a> •
-  <a href="#citation">Citation</a>
+  <a href="#license">License</a>
 </p>
 
 </div>
@@ -32,7 +32,7 @@
 
 Large language models process text as tokens, not as words, characters, or semantic units. When semantically equivalent content requires more tokens in one language than another, users of that language face measurable overhead: higher API cost, shorter effective context windows, and longer sequences for local inference.
 
-The **Tokenization Equity Audit (TEA)** measures this overhead in a focused technical education setting. The benchmark evaluates three tokenizers across a 70-item Python debugging and tutoring corpus translated from English into Bengali, Hindi, Arabic, Tamil, and Yoruba.
+The **Tokenization Equity Audit (TEA)** measures this overhead in a focused technical education setting. The benchmark evaluates three tokenizers across a 120-item Python debugging and tutoring corpus translated from English into Bengali, Hindi, Arabic, Tamil, and Yoruba.
 
 Bengali is the primary validated case in this artifact. Hindi, Arabic, Tamil, and Yoruba are included as exploratory comparison languages to test whether tokenization penalties vary across scripts and language families.
 
@@ -45,27 +45,29 @@ Bengali is the primary validated case in this artifact. Hindi, Arabic, Tamil, an
 | Language | Mean TFR | Effective Context of 128k | Extra Cost / 1k Requests |
 |---|---:|---:|---:|
 | English | 1.00× | 128,000 tokens (100.0%) | $0.00 |
-| Arabic | 1.41× | 90,702 tokens (70.9%) | $0.06 |
-| Hindi | 1.70× | 75,365 tokens (58.9%) | $0.10 |
-| Bengali | 1.80× | 70,937 tokens (55.4%) | $0.12 |
-| Tamil | 2.07× | 61,880 tokens (48.3%) | $0.15 |
-| Yoruba | 2.38× | 53,856 tokens (42.1%) | $0.20 |
+| Arabic | 1.44× | 89,148 tokens (69.6%) | $0.06 |
+| Bengali | 1.56× | 81,967 tokens (64.0%) | $0.07 |
+| Hindi | 1.72× | 74,461 tokens (58.2%) | $0.09 |
+| Tamil | 2.09× | 61,121 tokens (47.8%) | $0.14 |
+| Yoruba | 2.37× | 53,951 tokens (42.2%) | $0.18 |
+
+Under open-weight tokenizers, the disparity is substantially larger: Tamil exceeds 6.5× under both Qwen2.5 and Mistral, while Bengali and Hindi exceed 4–5× under multiple open-weight vocabularies.
 
 **TFR** means **Token Fertility Ratio**: the token count in a target language divided by the token count of the English version of the same item, using the same tokenizer.
 
-A TFR of 1.80× means the target-language version requires 80% more tokens than the English equivalent.
+A TFR of 1.56× means the target-language version requires 56% more tokens than the English equivalent.
 
 ---
 
 ## Corpus
 
-The TEA corpus contains **70 Python debugging and tutoring items** across three tiers.
+The TEA corpus contains **120 Python debugging and tutoring items** across three tiers.
 
 | Tier | Items | Description |
 |---|---:|---|
-| T1 | 20 | Short error messages, diagnostic phrases, and identifiers |
-| T2 | 30 | Short bug explanations and fix recommendations |
-| T3 | 20 | Longer conceptual explanations and small code examples |
+| T1 | 35 | Short error messages, diagnostic phrases, and identifiers |
+| T2 | 50 | Short bug explanations and fix recommendations |
+| T3 | 35 | Longer conceptual explanations and code examples |
 
 Each item is represented in six languages:
 
@@ -149,10 +151,10 @@ tea-benchmark/
 
 Generated files are included to support review-time verification. They can also be regenerated from the source corpus and scripts.
 
+Generated outputs are deterministic given the same tokenizer versions and source corpus.
+
 ---
-
 ## Quickstart
-
 ```bash
 # 1. Create and activate a virtual environment
 python3 -m venv .venv
@@ -173,10 +175,7 @@ python scripts/02_tokenize.py
 # 5. Generate paper figures
 python scripts/generate_tfr_figure.py
 ```
-
 For a full step-by-step guide, see [`RUNBOOK.md`](RUNBOOK.md).
-
----
 
 ## Reproducibility
 
@@ -195,13 +194,13 @@ The pipeline performs the following steps:
 
 The benchmark does not require GPU access.
 
----
-
 ## Translation and Validation Notes
 
-Bengali items were manually reviewed by Bengali-speaking reviewers with programming experience. The other target-language columns are included for exploratory comparison and should not be interpreted as fully validated pedagogical translations.
+The Bengali subset was manually reviewed by Bengali-speaking reviewers with programming experience. 
 
-This distinction is important: the benchmark’s strongest claim concerns Bengali technical tutoring content. Cross-language comparisons are used to motivate broader audits, not to claim final language-wide conclusions for every included language.
+Hindi, Arabic, Tamil, and Yoruba are included as exploratory comparison languages and should not be interpreted as fully validated pedagogical translations.
+
+The benchmark’s strongest claim concerns Bengali technical tutoring content. Cross-language comparisons are intended to motivate broader tokenizer audits rather than claim final language-wide conclusions for every included language.
 
 ---
 
@@ -213,22 +212,6 @@ The repository is prepared for anonymous review. Please avoid adding author name
 
 ---
 
-## Citation
-
-For anonymous review, cite the benchmark as:
-
-```bibtex
-@misc{anonymous2026tea,
-  title  = {Measuring the Tokenization Premium: A Cost Audit for Underserved Language Communities},
-  author = {{Anonymous}},
-  year   = {2026},
-  note   = {Anonymous artifact submitted for review}
-}
-```
-
-Replace the citation metadata after acceptance.
-
----
 
 ## License
 
