@@ -144,7 +144,6 @@ tea-benchmark/
 │   └── log_run.py
 ├── README.md
 ├── RUNBOOK.md
-├── REPRODUCIBILITY_NOTES.md
 ├── requirements.txt
 └── LICENSE
 ```
