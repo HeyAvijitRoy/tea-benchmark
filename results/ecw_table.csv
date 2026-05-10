@@ -1,0 +1,7 @@
+language,mean_tfr_gpt4o,ecw_tokens,ecw_pct_of_nominal
+English,1.0,128000,100.0
+Bengali,1.8044,70937,55.42
+Hindi,1.6984,75365,58.88
+Arabic,1.4112,90702,70.86
+Tamil,2.0685,61880,48.34
+Yoruba,2.3767,53856,42.08

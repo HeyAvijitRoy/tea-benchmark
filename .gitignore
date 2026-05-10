@@ -1,5 +1,5 @@
 # Generated outputs — do not commit
-results/
+# results/
 
 # Python cache
 __pycache__/

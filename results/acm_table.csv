@@ -1,0 +1,7 @@
+language,mean_tfr_gpt4o,acm,cost_per_1k_requests_usd
+English,1.0,1.0,0.0
+Bengali,1.8044,1.8044,0.1161
+Hindi,1.6984,1.6984,0.1008
+Arabic,1.4112,1.4112,0.0593
+Tamil,2.0685,2.0685,0.1542
+Yoruba,2.3767,2.3767,0.1986
