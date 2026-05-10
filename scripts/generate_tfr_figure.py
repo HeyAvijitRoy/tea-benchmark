@@ -199,7 +199,7 @@ legend.get_frame().set_linewidth(0.5)
 
 # ── Caption-style title (sits above the figure as a short descriptor) ────────
 ax.set_title(
-    "Token Fertility Ratio by Language and Tokenizer  (TEA Benchmark, $n = 70$)",
+    "Token Fertility Ratio by Language and Tokenizer  (TEA Benchmark, $n = 120$)",
     pad=7,
     fontsize=9.5,
     fontweight="normal",
