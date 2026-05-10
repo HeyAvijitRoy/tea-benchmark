@@ -318,3 +318,14 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+    from log_run import append_run_entry
+    append_run_entry(
+        script="02_tokenize.py",
+        stats={
+            "items":       70,
+            "languages":   6,
+            "tokenizers":  3,
+            "result_rows": 1260,
+        },
+    )

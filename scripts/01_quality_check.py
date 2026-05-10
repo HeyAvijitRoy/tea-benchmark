@@ -201,8 +201,20 @@ if __name__ == "__main__":
     repo_root = Path(__file__).resolve().parent.parent
     os.chdir(repo_root)
 
-    run_quality_check(
+    result_df = run_quality_check(
         corpus_path="data/tea_corpus.csv",
         output_path="data/tea_corpus_flagged.csv",
         report_path="data/quality_report.txt"
+    )
+
+    from log_run import append_run_entry
+    counts = result_df["bn_quality"].value_counts().to_dict()
+    append_run_entry(
+        script="01_quality_check.py",
+        stats={
+            "items":            len(result_df),
+            "clean":            counts.get("clean", 0),
+            "mixed":            counts.get("mixed", 0),
+            "english_retained": counts.get("english_retained", 0),
+        },
     )
