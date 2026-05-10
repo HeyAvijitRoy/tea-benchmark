@@ -125,3 +125,15 @@ All figures, README, and RUNBOOK updated to reflect 120-item corpus.
 - figures: 4
 - tfr_pdf: tfr_by_language_tokenizer.pdf
 - ecw_pdf: ecw_by_language.pdf
+
+
+## 2026-05-10 — `generate_tfr_figure.py` run
+- figures: 4
+- tfr_pdf: tfr_by_language_tokenizer.pdf
+- ecw_pdf: ecw_by_language.pdf
+
+
+## 2026-05-10 — `generate_tfr_figure.py` run
+- figures: 4
+- tfr_pdf: tfr_by_language_tokenizer.pdf
+- ecw_pdf: ecw_by_language.pdf
