@@ -42,18 +42,44 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 os.chdir(REPO_ROOT)
 FIGURES_DIR = REPO_ROOT / "figures"
 FIGURES_DIR.mkdir(exist_ok=True)
+RESULTS_DIR = REPO_ROOT / "results"
 
 OUT_PDF = FIGURES_DIR / "tfr_by_language_tokenizer.pdf"
 OUT_PNG = FIGURES_DIR / "tfr_by_language_tokenizer.png"
 
 
-# ── Data ────────────────────────────────────────────────────────────────────
-TFR_DATA = {
-    "Language":   ["English", "Arabic", "Hindi", "Bengali", "Tamil", "Yoruba"],
-    "GPT-4o":     [1.00, 1.41, 1.70, 1.80, 2.07, 2.38],
-    "Qwen2.5-7B": [1.00, 1.66, 4.72, 5.29, 6.41, 3.13],
-    "Mistral-7B": [1.00, 3.79, 5.07, 5.24, 6.43, 3.30],
+# ── Constants ───────────────────────────────────────────────────────────────
+LANGUAGE_ORDER = ["English", "Arabic", "Hindi", "Bengali", "Tamil", "Yoruba"]
+TOKENIZER_MAP  = {
+    "tiktoken_o200k":  "GPT-4o",
+    "qwen2.5_7b":      "Qwen2.5-7B",
+    "mistral_7b_v0.1": "Mistral-7B",
 }
+
+
+# ── Load TFR data from summary_stats.csv ────────────────────────────────────
+_stats = pd.read_csv(RESULTS_DIR / "summary_stats.csv")
+_stats = _stats[_stats["subset"] == "all"].copy()
+_stats["_weighted"] = _stats["mean_tfr"] * _stats["n_items"]
+_agg = (
+    _stats
+    .groupby(["language", "tokenizer"])
+    .agg(_wsum=("_weighted", "sum"), _n=("n_items", "sum"))
+    .reset_index()
+)
+_agg["mean_tfr"]  = _agg["_wsum"] / _agg["_n"]
+_agg["tokenizer"] = _agg["tokenizer"].map(TOKENIZER_MAP)
+
+_pivot = (
+    _agg.pivot(index="language", columns="tokenizer", values="mean_tfr")
+       .loc[LANGUAGE_ORDER]
+       .round(2)
+)
+
+TFR_DATA = {"Language": LANGUAGE_ORDER}
+for _tok in ["GPT-4o", "Qwen2.5-7B", "Mistral-7B"]:
+    TFR_DATA[_tok] = _pivot[_tok].tolist()
+
 df = pd.DataFrame(TFR_DATA)
 
 TOKENIZERS  = ["GPT-4o", "Qwen2.5-7B", "Mistral-7B"]
@@ -191,11 +217,13 @@ print(f"Saved: {OUT_PNG}")
 
 # ── Figure 2: Effective Context Window ──────────────────────────────────────
 
+_ecw_raw = pd.read_csv(RESULTS_DIR / "ecw_table.csv").set_index("language")
+_ecw_raw = _ecw_raw.loc[LANGUAGE_ORDER].reset_index()
 ECW_DATA = {
-    "Language": ["English", "Arabic", "Hindi", "Bengali", "Tamil",  "Yoruba"],
-    "ECW":      [128000,    90702,    75365,   70937,     61880,    53856],
+    "Language": _ecw_raw["language"].tolist(),
+    "ECW":      _ecw_raw["ecw_tokens"].tolist(),
 }
-NOMINAL     = 128_000
+NOMINAL = int(_ecw_raw.loc[_ecw_raw["language"] == "English", "ecw_tokens"].iloc[0])
 OUT_ECW_PDF = FIGURES_DIR / "ecw_by_language.pdf"
 OUT_ECW_PNG = FIGURES_DIR / "ecw_by_language.png"
 
