@@ -9,7 +9,7 @@
 
 Large language models charge for API access by the token. Tokenizers — the components that convert raw text into token sequences — are overwhelmingly optimized for English and Latin-script languages. This creates a hidden structural tax: identical semantic content expressed in Bengali, Tamil, Yoruba, or Arabic consumes significantly more tokens than its English equivalent, directly translating into higher API costs and reduced effective context windows for users in underserved language communities.
 
-The **TEA Benchmark** quantifies this disparity systematically. It audits three production tokenizers across six languages on a 70-item corpus of Python debugging content, computing the **Token Fertility Ratio (TFR)** — the multiplier by which a given language exceeds English token consumption — and derives downstream metrics: API Cost Multipliers (ACM) and Effective Context Windows (ECW).
+The **TEA Benchmark** quantifies this disparity systematically. It audits three production tokenizers across six languages on a 120-item corpus of Python debugging content, computing the **Token Fertility Ratio (TFR)** — the multiplier by which a given language exceeds English token consumption — and derives downstream metrics: API Cost Multipliers (ACM) and Effective Context Windows (ECW).
 
 ---
 
@@ -17,26 +17,26 @@ The **TEA Benchmark** quantifies this disparity systematically. It audits three 
 
 | Language | TFR (GPT-4o) | Effective Context (of 128k) | Extra cost / 1k requests |
 |---|---|---|---|
-| English | 1.00× | 128,000 tokens (100%) | $0.00 |
-| Arabic | 1.41× | 90,702 tokens (70.9%) | $0.06 |
-| Hindi | 1.70× | 75,365 tokens (58.9%) | $0.10 |
-| Bengali | 1.80× | 70,937 tokens (55.4%) | $0.12 |
-| Tamil | 2.07× | 61,880 tokens (48.3%) | $0.15 |
-| Yoruba | 2.38× | 53,856 tokens (42.1%) | $0.20 |
+| English | 1.00× | 128,000 tokens (100.0%) | $0.00 |
+| Arabic | 1.44× | 89,148 tokens (69.6%) | $0.06 |
+| Bengali | 1.56× | 81,967 tokens (64.0%) | $0.07 |
+| Hindi | 1.72× | 74,461 tokens (58.2%) | $0.09 |
+| Tamil | 2.09× | 61,121 tokens (47.8%) | $0.14 |
+| Yoruba | 2.37× | 53,951 tokens (42.2%) | $0.18 |
 
-Under open-weight models (Qwen2.5-7B, Mistral-7B-v0.1), the disparity is dramatically worse: Tamil reaches 6.4× and Bengali exceeds 5.2×, reflecting far weaker multilingual vocabulary investment.
+Under open-weight models (Qwen2.5-7B, Mistral-7B-v0.1), the disparity is dramatically worse: Tamil reaches 6.57×, Hindi 5.20× under Mistral, and Bengali 4.50× under Qwen, reflecting far weaker multilingual vocabulary investment.
 
 ---
 
 ## Corpus
 
-The TEA corpus consists of **70 items** across three difficulty tiers, drawn from Python debugging and error-explanation content — a domain where developer tools are disproportionately used in English.
+The TEA corpus consists of **120 items** across three difficulty tiers, drawn from Python debugging and error-explanation content — a domain where developer tools are disproportionately used in English.
 
 | Tier | Items | Description |
 |---|---|---|
-| T1 | 20 | Short error messages and single-line identifiers (≤ 10 words) |
-| T2 | 30 | Multi-sentence explanations and fix recommendations (10–50 words) |
-| T3 | 20 | Longer conceptual explanations and code blocks (50+ words) |
+| T1 | 35 | Short error messages and single-line identifiers (≤ 10 words) |
+| T2 | 50 | Multi-sentence explanations and fix recommendations (10–50 words) |
+| T3 | 35 | Longer conceptual explanations and code blocks (50+ words) |
 
 Each item is provided in six languages: **English**, **Bengali**, **Hindi**, **Arabic**, **Tamil**, **Yoruba**.
 
@@ -70,7 +70,7 @@ Numerically equal to TFR under a given tokenizer. Reflects the cost premium paid
 ```
 tea-benchmark/
 ├── data/
-│   ├── tea_corpus.csv            # Raw 70-item multilingual corpus
+│   ├── tea_corpus.csv            # Raw 120-item multilingual corpus
 │   ├── tea_corpus_flagged.csv    # Corpus + Bengali quality labels (generated)
 │   └── quality_report.txt        # Bengali quality audit report (generated)
 ├── results/                      # All computed outputs (generated)
@@ -121,7 +121,7 @@ Bengali translations in the corpus contain Python identifiers and error type nam
 - `mixed` (0.40–0.75) — significant code-switching
 - `english_retained` (< 0.40) — predominantly English/Latin
 
-In the current corpus, 60 of 70 Bengali items (85.7%) are classified `clean`. The remaining 10 are included in the `all` subset and excluded from the `clean_only` sensitivity subset in `summary_stats.csv`.
+In the current corpus, 62 of 120 Bengali items (51.7%) are classified `clean`, 50 (41.7%) are `mixed`, and 8 (6.7%) are `english_retained`. The 58 non-clean items are included in the `all` subset and excluded from the `clean_only` sensitivity subset in `summary_stats.csv`.
 
 ### TFR computation
 

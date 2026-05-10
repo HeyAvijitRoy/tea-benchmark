@@ -60,3 +60,68 @@ Notable: Tamil and Yoruba show the worst GPT-4o TFRs; Tamil reaches 6.4× under 
 
 - `RUNBOOK.md` — full operational guide: prerequisites, environment setup, step-by-step run instructions, expected terminal output, complete output file schema reference, interpretation notes, and troubleshooting section.
 - `README.md` — updated with project overview, key findings table, corpus description, tokenizer inventory, metric definitions, repository layout, quickstart, methodology notes, and citation block.
+
+
+## 2026-05-09 — Dataset updated and full pipeline re-run
+
+`tea_corpus.csv` was expanded from 70 to 120 items (T1: 20→35, T2: 30→50, T3: 20→35). All three pipeline scripts were re-run from scratch and all docs updated.
+
+**Bengali quality (120 items):**
+- `clean` (bn_ratio ≥ 0.75): 62 items — 51.7%
+- `mixed` (0.40–0.75): 50 items — 41.7%
+- `english_retained` (< 0.40): 8 items — 6.7%
+- Mean bn_ratio: 0.746 | Median: 0.855
+
+Note: the clean fraction dropped significantly vs the original 70-item corpus (51.7% vs 85.7%), driven by the newly added T1 items which contain many Python identifiers without Bengali equivalents.
+
+**Updated TFR (tiktoken GPT-4o, all 120 items):**
+
+| Language | Mean TFR | ECW (of 128k) |
+|---|---|---|
+| English | 1.0000 | 128,000 (100.0%) |
+| Arabic | 1.4358 | 89,148 (69.6%) |
+| Bengali | 1.5616 | 81,967 (64.0%) |
+| Hindi | 1.7190 | 74,461 (58.2%) |
+| Tamil | 2.0942 | 61,121 (47.8%) |
+| Yoruba | 2.3725 | 53,951 (42.2%) |
+
+Notable shift: Bengali TFR dropped from 1.80 to 1.56 (now below Hindi), likely because the new items include more short T1 error-type names where Bengali retains Latin characters, lowering the token count relative to English.
+
+**Open-weight model TFRs (updated):**
+
+| Language | Qwen2.5-7B | Mistral-7B |
+|---|---|---|
+| Bengali | 4.50 | 4.44 |
+| Hindi | 4.86 | 5.20 |
+| Arabic | 1.70 | 3.86 |
+| Tamil | 6.55 | 6.57 |
+| Yoruba | 3.18 | 3.33 |
+
+All figures, README, and RUNBOOK updated to reflect 120-item corpus.
+
+---
+
+## 2026-05-09 — `01_quality_check.py` run
+- items: 120
+- clean: 62
+- mixed: 50
+- english_retained: 8
+
+
+## 2026-05-09 — `02_tokenize.py` run
+- items: 120
+- languages: 6
+- tokenizers: 3
+- result_rows: 2160
+
+
+## 2026-05-09 — `generate_tfr_figure.py` run
+- figures: 4
+- tfr_pdf: tfr_by_language_tokenizer.pdf
+- ecw_pdf: ecw_by_language.pdf
+
+
+## 2026-05-09 — `generate_tfr_figure.py` run
+- figures: 4
+- tfr_pdf: tfr_by_language_tokenizer.pdf
+- ecw_pdf: ecw_by_language.pdf
