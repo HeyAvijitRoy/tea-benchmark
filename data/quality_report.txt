@@ -8,47 +8,95 @@ Thresholds applied:
   english_retained : bn_ratio < 0.4
 
 ── Overall Distribution ──────────────────────────────
-  clean               :  60 items  (85.7%)
-  mixed               :   9 items  (12.9%)
-  english_retained    :   1 items  (1.4%)
-  TOTAL               :  70 items
+  clean               :  62 items  (51.7%)
+  mixed               :  50 items  (41.7%)
+  english_retained    :   8 items  (6.7%)
+  TOTAL               : 120 items
 
 ── Per-Tier Breakdown ────────────────────────────────
 
-  T1 (20 items):
-    clean               :  10  (50.0%)
-    mixed               :   9  (45.0%)
-    english_retained    :   1  (5.0%)
+  T1 (35 items):
+    clean               :  11  (31.4%)
+    mixed               :  18  (51.4%)
+    english_retained    :   6  (17.1%)
 
-  T2 (30 items):
-    clean               :  30  (100.0%)
-    mixed               :   0  (0.0%)
+  T2 (50 items):
+    clean               :  31  (62.0%)
+    mixed               :  19  (38.0%)
     english_retained    :   0  (0.0%)
 
-  T3 (20 items):
-    clean               :  20  (100.0%)
-    mixed               :   0  (0.0%)
-    english_retained    :   0  (0.0%)
+  T3 (35 items):
+    clean               :  20  (57.1%)
+    mixed               :  13  (37.1%)
+    english_retained    :   2  (5.7%)
 
 ── Items Excluded from Clean-Only Analysis ──────────
-  Total flagged (mixed + english_retained): 10
+  Total flagged (mixed + english_retained): 58
 
   Key        Tier   Quality               Ratio  Bengali text (first 60 chars)
   --------- ----- ------------------- ------  ----------------------------------------
   T1-11      T1     english_retained      0.000  KeyError: 'name'
+  T1-26      T1     english_retained      0.281  ImportError: module import করা যায়নি
+  T1-24      T1     english_retained      0.310  AttributeError: object-টির এমন কোনো attribute নেই
+  T1-27      T1     english_retained      0.324  ModuleNotFoundError: module পাওয়া যায়নি
+  T1-22      T1     english_retained      0.333  ValueError: int() এর জন্য অবৈধ literal
+  T1-28      T1     english_retained      0.365  UnboundLocalError: assignment করার আগে local variable ব্যবহা
+  T3-28      T3     english_retained      0.391  exception handling-এর কাজ error বোঝা সহজ করা, error লুকানো ন
+  T3-29      T3     english_retained      0.398  numbers যদি string হিসেবে stored থাকে, sorting unexpected হত
+  T3-34      T3     mixed                 0.406  API বা JSON data নিয়ে কাজ করার সময় response-এর structure গ
+  T1-25      T1     mixed                 0.417  FileNotFoundError: ফাইল path বিদ্যমান নেই
+  T3-30      T3     mixed                 0.419  file path fail করতে পারে কারণ script আপনার expected director
+  T3-27      T3     mixed                 0.423  Boolean expression আপনার যে logic test করতে চান তার সাথে মিল
+  T1-32      T1     mixed                 0.429  function call-এ প্রয়োজনীয় argument নেই
+  T2-40      T2     mixed                 0.433  comparison fail করছে কারণ একটি value string এবং অন্যটি numbe
+  T3-32      T3     mixed                 0.433  list comprehension existing iterable থেকে নতুন list তৈরি করা
+  T3-33      T3     mixed                 0.436  class data এবং behavior-কে একটি reusable structure-এ group ক
   T1-12      T1     mixed                 0.452  ZeroDivisionError: শূন্য দ্বারা ভাগ
+  T2-37      T2     mixed                 0.453  infinite loop ঘটে যখন loop condition সবসময় true থাকে। loop-
+  T2-46      T2     mixed                 0.456  mutable default argument আগের function call-এর values ধরে রা
+  T2-44      T2     mixed                 0.464  এই condition সবসময় true হচ্ছে কারণ Python-এ non-empty strin
+  T2-36      T2     mixed                 0.465  এই import সমস্যা সাধারণত বোঝায় যে বর্তমান Python environmen
+  T3-25      T3     mixed                 0.476  indentation Python syntax-এর অংশ, শুধু formatting নয়। একই i
+  T2-49      T2     mixed                 0.478  dictionary loop defaultভাবে keys দেয়। প্রতিটি iteration-এ k
+  T3-31      T3     mixed                 0.490  recursion মানে একটি function একই problem-এর ছোট version solv
+  T3-23      T3     mixed                 0.493  program-এর অন্য অংশ যদি result ব্যবহার করতে চায়, তাহলে func
+  T2-41      T2     mixed                 0.500  এই function None return করছে কারণ caller-এর কাছে value পাঠান
+  T3-24      T3     mixed                 0.506  list mutable, অর্থাৎ তৈরি করার পরেও এটি পরিবর্তন করা যায়। এ
+  T3-22      T3     mixed                 0.514  dictionary key অনুযায়ী value সংরক্ষণ করে, তাই missing key a
+  T2-48      T2     mixed                 0.514  code list-টিকে string হিসেবে sort করছে, তাই "10" "2"-এর আগে 
+  T3-21      T3     mixed                 0.514  Python-এ input() ব্যবহার করলে মনে রাখতে হবে যে returned valu
   T1-16      T1     mixed                 0.542  AttributeError: 'NoneType' অবজেক্টের 'split' নামক কোনো অ্যাট
+  T2-35      T2     mixed                 0.552  ফাইলটি open করা যাচ্ছে না কারণ Python আপনার দেওয়া path-এ ফা
+  T3-35      T3     mixed                 0.555  problem reproduce করে এমন সবচেয়ে ছোট code অংশ আলাদা করলে de
+  T2-50      T2     mixed                 0.559  এই recursion থামছে না কারণ base case নেই বা কখনো পৌঁছানো হচ্
+  T1-30      T1     mixed                 0.565  comparison-এর জন্য == এবং assignment-এর জন্য = ব্যবহার করুন
+  T2-42      T2     mixed                 0.576  function-টি list-কে in place পরিবর্তন করছে, তাই original lis
+  T2-47      T2     mixed                 0.579  try block সব exception ধরছে, ফলে আসল সমস্যা লুকিয়ে যেতে পার
   T1-17      T1     mixed                 0.582  AttributeError: 'int' অবজেক্টের 'append' নামক কোনো অ্যাট্রিব
+  T3-26      T3     mixed                 0.610  range() function loop-এ সাধারণভাবে ব্যবহৃত হয়, কিন্তু এর st
+  T2-38      T2     mixed                 0.618  এই off-by-one সমস্যা হয় কারণ loop একবার বেশি বা একবার কম চল
   T1-05      T1     mixed                 0.625  TypeError: str এর সাথে শুধুমাত্র str যুক্ত করা যায় (int নয়
+  T2-33      T2     mixed                 0.633  KeyError মানে dictionary-তে আপনি যে key চেয়েছেন সেটি নেই। k
+  T2-34      T2     mixed                 0.635  এই AttributeError মানে object-টি আপনি যে method বা property 
+  T2-32      T2     mixed                 0.639  input() থেকে আসা ইনপুট সবসময় string হয়। এটি arithmetic-এ ব
+  T1-34      T1     mixed                 0.641  মনে রাখবেন, Python indexing শূন্য থেকে শুরু হয়
   T1-07      T1     mixed                 0.643  NameError: 'x' নামটি সংজ্ঞায়িত নয়
+  T2-45      T2     mixed                 0.647  code ফাইল open করছে কিন্তু close করছে না। with statement ব্য
+  T1-35      T1     mixed                 0.653  dictionary-এর উপর iterate করার সময় সেটি পরিবর্তন করবেন না
+  T1-31      T1     mixed                 0.654  loop-এর শর্ত কখনো false হচ্ছে না
   T1-06      T1     mixed                 0.659  TypeError: + এর জন্য অসমর্থিত অপারেন্ড টাইপ: 'int' এবং 'str'
+  T2-39      T2     mixed                 0.660  list-এর শেষে একটি item যোগ করতে চাইলে append() ব্যবহার করুন।
+  T2-43      T2     mixed                 0.669  indentation-এর কারণে এই line-টি loop-এর বাইরে চলে গেছে, তাই 
   T1-14      T1     mixed                 0.675  ValueError: 10 ভিত্তিক int() এর জন্য আক্ষরিক মান অবৈধ
   T1-10      T1     mixed                 0.677  IndexError: তালিকার সূচক সীমার বাইরে
+  T1-23      T1     mixed                 0.703  KeyError: অনুরোধ করা key খুঁজে পাওয়া যায়নি
+  T1-21      T1     mixed                 0.719  NameError: নামটি সংজ্ঞায়িত করা হয়নি
+  T1-33      T1     mixed                 0.735  index 0 অ্যাক্সেস করার আগে list-টি খালি আছে
   T1-08      T1     mixed                 0.746  UnboundLocalError: অ্যাসাইনমেন্টের আগে লোকাল ভেরিয়েবল রেফার
 
 ── Ratio Statistics ─────────────────────────────────
-  Mean bn_ratio  : 0.900
-  Median bn_ratio: 0.955
+  Mean bn_ratio  : 0.746
+  Median bn_ratio: 0.855
   Min bn_ratio   : 0.000  (T1-11)
   Max bn_ratio   : 1.000  (T1-01)
 

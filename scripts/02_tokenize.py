@@ -315,17 +315,19 @@ def main():
     for path, frame in output_files:
         print(f"  {str(path):<40}  {len(frame):>5} rows")
 
+    return len(df)
+
 
 if __name__ == "__main__":
-    main()
+    n_items = main()
 
     from log_run import append_run_entry
     append_run_entry(
         script="02_tokenize.py",
         stats={
-            "items":       70,
+            "items":       n_items,
             "languages":   6,
             "tokenizers":  3,
-            "result_rows": 1260,
+            "result_rows": n_items * 6 * 3,
         },
     )
