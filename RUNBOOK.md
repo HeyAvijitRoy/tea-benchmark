@@ -165,8 +165,8 @@ Thresholds applied:
   english_retained : bn_ratio < 0.40
 
 ── Overall Distribution ──────────────────────────────
-  clean               :  58 items  (82.9%)
-  mixed               :  11 items  (15.7%)
+  clean               :  60 items  (85.7%)
+  mixed               :   9 items  (12.9%)
   english_retained    :   1 items  ( 1.4%)
   TOTAL               :  70 items
 
@@ -412,7 +412,7 @@ TFR is relatively stable across tiers for most languages, indicating the tokeniz
 
 ### Bengali sensitivity analysis (`clean_only`)
 
-Eleven Bengali items (15.7%) were classified as `mixed` or `english_retained` due to code-switching (retained Python identifiers like `TypeError`, `NoneType`). The `clean_only` subset excludes these from Bengali TFR computation to check whether they inflate or deflate the overall Bengali penalty. Compare `mean_tfr` values between `subset=all` and `subset=clean_only` in `summary_stats.csv` to assess the sensitivity.
+Ten Bengali items (9 mixed + 1 english_retained, 14.3% combined) were classified below `clean` due to code-switching (retained Python identifiers like `TypeError`, `NoneType`). The `clean_only` subset excludes these from Bengali TFR computation to check whether they inflate or deflate the overall Bengali penalty. Compare `mean_tfr` values between `subset=all` and `subset=clean_only` in `summary_stats.csv` to assess the sensitivity.
 
 ---
 

@@ -121,7 +121,7 @@ Bengali translations in the corpus contain Python identifiers and error type nam
 - `mixed` (0.40–0.75) — significant code-switching
 - `english_retained` (< 0.40) — predominantly English/Latin
 
-In the current corpus, 58 of 70 Bengali items (82.9%) are classified `clean`. The remaining 12 are included in the `all` subset and excluded from the `clean_only` sensitivity subset in `summary_stats.csv`.
+In the current corpus, 60 of 70 Bengali items (85.7%) are classified `clean`. The remaining 10 are included in the `all` subset and excluded from the `clean_only` sensitivity subset in `summary_stats.csv`.
 
 ### TFR computation
 

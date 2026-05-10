@@ -16,8 +16,8 @@
 
 Ran `scripts/01_quality_check.py` against `data/tea_corpus.csv` (70 items, 6 language columns). The script computes the ratio of Bengali Unicode characters (U+0980–U+09FF) to total alphabetic characters and classifies each item:
 
-- `clean` (bn_ratio ≥ 0.75): 58 items — 82.9%
-- `mixed` (0.40–0.75): 11 items — 15.7%
+- `clean` (bn_ratio ≥ 0.75): 60 items — 85.7%
+- `mixed` (0.40–0.75): 9 items — 12.9%
 - `english_retained` (< 0.40): 1 item — 1.4% (T1-11, a purely symbolic error with no translatable text)
 
 Output: `data/tea_corpus_flagged.csv` (70 rows × 12 columns, adds `bn_ratio`, `bn_quality`, `tier`) and `data/quality_report.txt`.
