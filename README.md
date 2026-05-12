@@ -1,22 +1,49 @@
-# Measuring the Tokenization Premium
-## A Cross-Script Cost Audit for Underserved Language Communities
+<div align="center">
 
-**Tokenization Equity Audit (TEA) Benchmark**
+# Tokenization Equity Audit (TEA)
+
+### Measuring the Tokenization Premium for Underserved Language Communities
+
+<p>
+  <strong>A reproducible benchmark for auditing tokenization cost, context-window loss, and sequence-length overhead in multilingual technical tutoring content.</strong>
+</p>
+
+<p>
+  <img alt="Python" src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" />
+  <img alt="pandas" src="https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white" />
+  <img alt="NumPy" src="https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white" />
+  <img alt="Hugging Face" src="https://img.shields.io/badge/Hugging%20Face-FFD21E?style=for-the-badge&logo=huggingface&logoColor=000000" />
+  <img alt="Matplotlib" src="https://img.shields.io/badge/Matplotlib-11557C?style=for-the-badge&logo=matplotlib&logoColor=white" />
+</p>
+
+<p>
+  <a href="#quickstart">Quickstart</a> •
+  <a href="#benchmark-summary">Benchmark Summary</a> •
+  <a href="#repository-structure">Repository Structure</a> •
+  <a href="#reproducibility">Reproducibility</a> •
+  <a href="#license">License</a>
+</p>
+
+</div>
 
 ---
 
 ## Overview
 
-Large language models charge for API access by the token. Tokenizers — the components that convert raw text into token sequences — are overwhelmingly optimized for English and Latin-script languages. This creates a hidden structural tax: identical semantic content expressed in Bengali, Tamil, Yoruba, or Arabic consumes significantly more tokens than its English equivalent, directly translating into higher API costs and reduced effective context windows for users in underserved language communities.
+Large language models process text as tokens, not as words, characters, or semantic units. When semantically equivalent content requires more tokens in one language than another, users of that language face measurable overhead: higher API cost, shorter effective context windows, and longer sequences for local inference.
 
-The **TEA Benchmark** quantifies this disparity systematically. It audits three production tokenizers across six languages on a 120-item corpus of Python debugging content, computing the **Token Fertility Ratio (TFR)** — the multiplier by which a given language exceeds English token consumption — and derives downstream metrics: API Cost Multipliers (ACM) and Effective Context Windows (ECW).
+The **Tokenization Equity Audit (TEA)** measures this overhead in a focused technical education setting. The benchmark evaluates three tokenizers across a 120-item Python debugging and tutoring corpus translated from English into Bengali, Hindi, Arabic, Tamil, and Yoruba.
+
+Bengali is the primary validated case in this artifact. Hindi, Arabic, Tamil, and Yoruba are included as exploratory comparison languages to test whether tokenization penalties vary across scripts and language families.
 
 ---
 
-## Key Findings
+## Benchmark Summary
 
-| Language | TFR (GPT-4o) | Effective Context (of 128k) | Extra cost / 1k requests |
-|---|---|---|---|
+### Main GPT-4o Tokenization Results
+
+| Language | Mean TFR | Effective Context of 128k | Extra Cost / 1k Requests |
+|---|---:|---:|---:|
 | English | 1.00× | 128,000 tokens (100.0%) | $0.00 |
 | Arabic | 1.44× | 89,148 tokens (69.6%) | $0.06 |
 | Bengali | 1.56× | 81,967 tokens (64.0%) | $0.07 |
@@ -24,129 +51,176 @@ The **TEA Benchmark** quantifies this disparity systematically. It audits three 
 | Tamil | 2.09× | 61,121 tokens (47.8%) | $0.14 |
 | Yoruba | 2.37× | 53,951 tokens (42.2%) | $0.18 |
 
-Under open-weight models (Qwen2.5-7B, Mistral-7B-v0.1), the disparity is dramatically worse: Tamil reaches 6.57×, Hindi 5.20× under Mistral, and Bengali 4.50× under Qwen, reflecting far weaker multilingual vocabulary investment.
+Under open-weight tokenizers, the disparity is substantially larger: Tamil exceeds 6.5× under both Qwen2.5 and Mistral, while Bengali and Hindi exceed 4–5× under multiple open-weight vocabularies.
+
+**TFR** means **Token Fertility Ratio**: the token count in a target language divided by the token count of the English version of the same item, using the same tokenizer.
+
+A TFR of 1.56× means the target-language version requires 56% more tokens than the English equivalent.
 
 ---
 
 ## Corpus
 
-The TEA corpus consists of **120 items** across three difficulty tiers, drawn from Python debugging and error-explanation content — a domain where developer tools are disproportionately used in English.
+The TEA corpus contains **120 Python debugging and tutoring items** across three tiers.
 
 | Tier | Items | Description |
-|---|---|---|
-| T1 | 35 | Short error messages and single-line identifiers (≤ 10 words) |
-| T2 | 50 | Multi-sentence explanations and fix recommendations (10–50 words) |
-| T3 | 35 | Longer conceptual explanations and code blocks (50+ words) |
+|---|---:|---|
+| T1 | 35 | Short error messages, diagnostic phrases, and identifiers |
+| T2 | 50 | Short bug explanations and fix recommendations |
+| T3 | 35 | Longer conceptual explanations and code examples |
 
-Each item is provided in six languages: **English**, **Bengali**, **Hindi**, **Arabic**, **Tamil**, **Yoruba**.
+Each item is represented in six languages:
+
+- English
+- Bengali
+- Hindi
+- Arabic
+- Tamil
+- Yoruba
+
+Python-specific symbols, class names, and identifiers such as `TypeError`, `IndexError`, `NoneType`, and code variables are intentionally retained in English where appropriate. This reflects common multilingual programming practice and avoids mistranslating language-specific programming symbols.
 
 ---
 
 ## Tokenizers Evaluated
 
-| Tokenizer | Model | Vocabulary size | Access |
-|---|---|---|---|
-| `tiktoken o200k_base` | GPT-4o | 200,019 | Public |
-| `Qwen/Qwen2.5-7B` | Qwen 2.5 7B | 151,936 | HuggingFace (open) |
-| `mistralai/Mistral-7B-v0.1` | Mistral 7B | 32,000 | HuggingFace (open) |
+| Tokenizer Label | Source | Notes |
+|---|---|---|
+| `tiktoken_o200k` | OpenAI `o200k_base` via `tiktoken` | Used as the GPT-4o-family tokenizer in this audit |
+| `qwen2.5_7b` | `Qwen/Qwen2.5-7B` via Hugging Face `AutoTokenizer` | Tokenizer only; no model weights required |
+| `mistral_7b_v0.1` | `mistralai/Mistral-7B-v0.1` via Hugging Face `AutoTokenizer` | Tokenizer only; no model weights required |
+
+No model inference is required to reproduce the benchmark.
 
 ---
 
 ## Metrics
 
-**Token Fertility Ratio (TFR)**
-The ratio of token count in a target language to token count in English for the same item and tokenizer. A TFR of 2.0 means the language requires twice as many tokens.
+### Token Fertility Ratio (TFR)
 
-**API Cost Multiplier (ACM)**
-Numerically equal to TFR under a given tokenizer. Reflects the cost premium paid per API call for equivalent semantic content.
+```text
+TFR = token_count(target_language_item) / token_count(English_item)
+```
 
-**Effective Context Window (ECW)**
-`ECW = nominal_window / TFR`. For GPT-4o's 128,000-token window, a Tamil user effectively has access to only ~61,880 tokens of content capacity — the same nominal price buys 48% of the usable context.
+TFR is computed per item, language, and tokenizer before aggregation. This avoids artifacts caused by simply summing all tokens across a corpus.
+
+### API Cost Multiplier (ACM)
+
+For token-priced APIs, ACM is numerically equivalent to mean TFR. It estimates how much more input-token cost a target-language request incurs compared with an equivalent English request.
+
+### Effective Context Window (ECW)
+
+```text
+ECW = nominal_context_window / mean_TFR
+```
+
+ECW estimates how much semantically equivalent content fits into the same token budget. It does not claim that the model architecture changes by language.
 
 ---
 
 ## Repository Structure
 
-```
+```text
 tea-benchmark/
 ├── data/
-│   ├── tea_corpus.csv            # Raw 120-item multilingual corpus
-│   ├── tea_corpus_flagged.csv    # Corpus + Bengali quality labels (generated)
-│   └── quality_report.txt        # Bengali quality audit report (generated)
-├── results/                      # All computed outputs (generated)
-│   ├── raw_token_counts.csv      # Token counts per item × language × tokenizer
-│   ├── tfr_by_item.csv           # TFR per item × language × tokenizer
-│   ├── summary_stats.csv         # Aggregated stats by language/tokenizer/tier
-│   ├── acm_table.csv             # API Cost Multiplier table
-│   └── ecw_table.csv             # Effective Context Window table
+│   ├── tea_corpus.csv
+│   ├── tea_corpus_flagged.csv
+│   └── quality_report.txt
+├── results/
+│   ├── raw_token_counts.csv
+│   ├── tfr_by_item.csv
+│   ├── summary_stats.csv
+│   ├── acm_table.csv
+│   └── ecw_table.csv
+├── figures/
+│   ├── tfr_by_language_tokenizer.pdf
+│   ├── tfr_by_language_tokenizer.png
+│   ├── ecw_by_language.pdf
+│   ├── ecw_by_language.png
+│   └── tokenizer_fragmentation_example.png
 ├── scripts/
-│   ├── 01_quality_check.py       # Bengali translation quality classification
-│   └── 02_tokenize.py            # Tokenization pipeline
-├── requirements.txt              # Python dependencies
-├── RUNBOOK.md                    # Full step-by-step operational guide
-└── Notes.md                      # Development log
+│   ├── 01_quality_check.py
+│   ├── 02_tokenize.py
+│   ├── generate_tfr_figure.py
+│   ├── log_run.py
+│   └── token_split_table.py
+├── README.md
+├── RUNBOOK.md
+├── requirements.txt
+└── LICENSE
 ```
 
+Generated files are included to support review-time verification. They can also be regenerated from the source corpus and scripts.
+
+Generated outputs are deterministic given the same tokenizer versions and source corpus.
+
 ---
-
 ## Quickstart
-
 ```bash
 # 1. Create and activate a virtual environment
 python3 -m venv .venv
-source .venv/bin/activate        # macOS / Linux
-# .venv\Scripts\activate         # Windows (PowerShell)
+source .venv/bin/activate
 
-# 2. Install all pinned dependencies
+# Windows PowerShell alternatives:
+# python -m venv .venv
+# .venv\Scripts\activate
+
+# 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Run Bengali quality classification (generates tea_corpus_flagged.csv)
+# 3. Step 1: Bengali quality check
 python scripts/01_quality_check.py
 
-# 4. Run tokenization pipeline (generates all results/)
+# 4. Step 2: tokenization pipeline
 python scripts/02_tokenize.py
-```
 
-For full details on what each script does, expected output, and troubleshooting, see [RUNBOOK.md](RUNBOOK.md).
+# 5. Step 3: figure generation
+python scripts/generate_tfr_figure.py
+```
+For full reproducible procedures, output documentation, and troubleshooting, see [`RUNBOOK.md`](RUNBOOK.md).
+
+## Reproducibility
+
+This artifact is designed to support anonymous review and independent reproduction.
+
+The pipeline performs the following steps:
+
+1. Loads the multilingual TEA corpus.
+2. Classifies Bengali items by script-ratio quality labels.
+3. Loads tokenizer vocabularies without downloading model weights.
+4. Computes token counts for each item, language, and tokenizer.
+5. Computes per-item Token Fertility Ratio values.
+6. Aggregates summary statistics.
+7. Produces cost and context-window tables.
+8. Generates publication-ready figures.
+
+The benchmark does not require GPU access.
+
+## Translation and Validation Notes
+
+The Bengali subset was manually reviewed by Bengali-speaking reviewers with programming experience. 
+
+Hindi, Arabic, Tamil, and Yoruba are included as exploratory comparison languages and should not be interpreted as fully validated pedagogical translations.
+
+The benchmark’s strongest claim concerns Bengali technical tutoring content. Cross-language comparisons are intended to motivate broader tokenizer audits rather than claim final language-wide conclusions for every included language.
 
 ---
 
-## Methodology Notes
+## Data and Privacy Notes
 
-### Bengali quality classification
+The corpus contains synthetic or benchmark-style programming education examples. It does not contain personal data, classroom logs, student submissions, names, emails, or institutional identifiers.
 
-Bengali translations in the corpus contain Python identifiers and error type names (e.g., `TypeError`, `NoneType`) that are lexically English. The quality check script classifies each item by the ratio of Bengali Unicode characters (U+0980–U+09FF) to total alphabetic characters:
-
-- `clean` (≥ 0.75) — predominantly Bengali
-- `mixed` (0.40–0.75) — significant code-switching
-- `english_retained` (< 0.40) — predominantly English/Latin
-
-In the current corpus, 62 of 120 Bengali items (51.7%) are classified `clean`, 50 (41.7%) are `mixed`, and 8 (6.7%) are `english_retained`. The 58 non-clean items are included in the `all` subset and excluded from the `clean_only` sensitivity subset in `summary_stats.csv`.
-
-### TFR computation
-
-TFR is computed per item (not over aggregated token counts) to avoid length-composition artifacts. Summary statistics (mean, median, std) are computed over per-item TFR values within each group.
-
-### Cost model
-
-API cost projections use GPT-4o input pricing of **$2.50 per 1 million tokens** (as of benchmark date). The cost-per-1k-requests figure represents the *additional* cost versus an equivalent English request, assuming one item of average English token length per request. It is not the total cost.
+The repository is prepared for anonymous review. Please avoid adding author names, institutional paths, compute-allocation identifiers, personal Git history, or acknowledgments until camera-ready release.
 
 ---
 
-## Citation
 
-If you use this benchmark or its methodology, please cite:
+## License
 
-```
-@misc{tea-benchmark-2026,
-  title   = {Measuring the Tokenization Premium: A Cross-Script Cost Audit
-             for Underserved Language Communities},
-  author  = {},
-  year    = {2026},
-  url     = {}
-}
-```
+This work is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International License** (CC-BY-NC 4.0).
 
----
+You are free to:
+- Share and adapt the material for non-commercial purposes
+- Give appropriate credit to the original authors
 
-*Benchmark date: 2026-05-09 | Platform: Jetstream2*
+See the [LICENSE](LICENSE) file for full details.
