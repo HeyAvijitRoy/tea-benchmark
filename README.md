@@ -136,12 +136,14 @@ tea-benchmark/
 │   ├── tfr_by_language_tokenizer.pdf
 │   ├── tfr_by_language_tokenizer.png
 │   ├── ecw_by_language.pdf
-│   └── ecw_by_language.png
+│   ├── ecw_by_language.png
+│   └── tokenizer_fragmentation_example.png
 ├── scripts/
 │   ├── 01_quality_check.py
 │   ├── 02_tokenize.py
 │   ├── generate_tfr_figure.py
-│   └── log_run.py
+│   ├── log_run.py
+│   └── token_split_table.py
 ├── README.md
 ├── RUNBOOK.md
 ├── requirements.txt
@@ -159,22 +161,23 @@ Generated outputs are deterministic given the same tokenizer versions and source
 python3 -m venv .venv
 source .venv/bin/activate
 
-# Windows PowerShell alternative:
+# Windows PowerShell alternatives:
+# python -m venv .venv
 # .venv\Scripts\activate
 
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Run Bengali quality classification
+# 3. Step 1: Bengali quality check
 python scripts/01_quality_check.py
 
-# 4. Run tokenizer audit
+# 4. Step 2: tokenization pipeline
 python scripts/02_tokenize.py
 
-# 5. Generate paper figures
+# 5. Step 3: figure generation
 python scripts/generate_tfr_figure.py
 ```
-For a full step-by-step guide, see [`RUNBOOK.md`](RUNBOOK.md).
+For full reproducible procedures, output documentation, and troubleshooting, see [`RUNBOOK.md`](RUNBOOK.md).
 
 ## Reproducibility
 

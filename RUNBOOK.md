@@ -18,43 +18,11 @@ The runbook is intentionally anonymous. It does not include author names, instit
 
 No model weights are downloaded or used. The benchmark only loads tokenizer files.
 
----
-
-## 2. Expected Repository Layout
-
-```text
-tea-benchmark/
-├── data/
-│   ├── tea_corpus.csv
-│   ├── tea_corpus_flagged.csv
-│   └── quality_report.txt
-├── results/
-│   ├── raw_token_counts.csv
-│   ├── tfr_by_item.csv
-│   ├── summary_stats.csv
-│   ├── acm_table.csv
-│   └── ecw_table.csv
-├── figures/
-│   ├── tfr_by_language_tokenizer.pdf
-│   ├── tfr_by_language_tokenizer.png
-│   ├── ecw_by_language.pdf
-│   └── ecw_by_language.png
-├── scripts/
-│   ├── 01_quality_check.py
-│   ├── 02_tokenize.py
-│   ├── generate_tfr_figure.py
-│   └── log_run.py
-├── README.md
-├── RUNBOOK.md
-├── LICENSE
-└── requirements.txt
-```
-
-`tea_corpus.csv` is the source file. All other data, result, and figure files can be regenerated from the scripts.
+For the current repository tree, see the canonical structure section in `README.md`.
 
 ---
 
-## 3. Environment Setup
+## 2. Environment Setup
 
 Create a clean virtual environment from the repository root.
 
@@ -84,7 +52,7 @@ python -c "import pandas, tiktoken, transformers; print('environment ok')"
 
 ---
 
-## 4. Step 1 — Bengali Quality Check
+## 3. Step 1 — Bengali Quality Check
 
 **Script:** `scripts/01_quality_check.py`  
 **Input:** `data/tea_corpus.csv`  
@@ -113,7 +81,7 @@ These labels support the clean-only Bengali sensitivity analysis reported in the
 
 ---
 
-## 5. Step 2 — Tokenization Pipeline
+## 4. Step 2 — Tokenization Pipeline
 
 **Script:** `scripts/02_tokenize.py`  
 **Input:** `data/tea_corpus_flagged.csv`  
@@ -149,7 +117,7 @@ Expected tokenizer rows:
 
 ---
 
-## 6. Step 3 — Figure Generation
+## 5. Step 3 — Figure Generation
 
 **Script:** `scripts/generate_tfr_figure.py`  
 **Inputs:** `results/acm_table.csv`, `results/ecw_table.csv`, and/or `results/summary_stats.csv` depending on script implementation  
@@ -170,7 +138,7 @@ The PDF files are intended for LaTeX submission. PNG files are included only for
 
 ---
 
-## 7. Output File Reference
+## 6. Output File Reference
 
 ### `data/tea_corpus_flagged.csv`
 
@@ -236,7 +204,7 @@ ECW = 128000 / mean_TFR
 
 ---
 
-## 8. Re-running From Scratch
+## 7. Re-running From Scratch
 
 To regenerate all outputs:
 
@@ -262,7 +230,7 @@ python scripts\generate_tfr_figure.py
 
 ---
 
-## 9. Troubleshooting
+## 8. Troubleshooting
 
 ### `ModuleNotFoundError`
 
