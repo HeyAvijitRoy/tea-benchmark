@@ -25,6 +25,7 @@ Requires: pandas (no other dependencies)
 
 import os
 import re
+import sys
 import pandas as pd
 from pathlib import Path
 
@@ -37,6 +38,13 @@ BENGALI_END   = 0x09FF
 # ── Thresholds ─────────────────────────────────────────────────────────────────
 CLEAN_THRESHOLD  = 0.75
 MIXED_THRESHOLD  = 0.40
+
+
+def configure_console() -> None:
+    """Use UTF-8 for multilingual output on Windows and compatible terminals."""
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
 
 
 def is_bengali_char(char: str) -> bool:
@@ -196,6 +204,7 @@ def run_quality_check(
 
 
 if __name__ == "__main__":
+    configure_console()
     # Resolve paths relative to the repository root,
     # regardless of where the script is called from.
     repo_root = Path(__file__).resolve().parent.parent

@@ -1,5 +1,11 @@
 <div align="center">
 
+**Accepted for Oral Presentation and Poster at the Language Models for Underserved Communities (LM4UC) Workshop · IJCAI 2026**
+
+Bremen, Germany · August 16, 2026
+
+[Read the accepted paper](Tokenization%20Equity%20Audit.pdf)
+
 # Tokenization Equity Audit (TEA)
 
 ### Measuring the Tokenization Premium for Underserved Language Communities
@@ -34,7 +40,7 @@ Large language models process text as tokens, not as words, characters, or seman
 
 The **Tokenization Equity Audit (TEA)** measures this overhead in a focused technical education setting. The benchmark evaluates three tokenizers across a 120-item Python debugging and tutoring corpus translated from English into Bengali, Hindi, Arabic, Tamil, and Yoruba.
 
-Bengali is the primary validated case in this artifact. Hindi, Arabic, Tamil, and Yoruba are included as exploratory comparison languages to test whether tokenization penalties vary across scripts and language families.
+Bengali and Hindi are the primary validated cases in this artifact. Arabic, Tamil, and Yoruba are included as exploratory comparison languages to test whether tokenization penalties vary across scripts and language families.
 
 ---
 
@@ -78,17 +84,17 @@ Each item is represented in six languages:
 - Tamil
 - Yoruba
 
-Python-specific symbols, class names, and identifiers such as `TypeError`, `IndexError`, `NoneType`, and code variables are intentionally retained in English where appropriate. This reflects common multilingual programming practice and avoids mistranslating language-specific programming symbols.
+Python-specific symbols, canonical exception messages, class names, and identifiers such as `TypeError`, `IndexError`, `NoneType`, and code variables are intentionally retained in English where appropriate. This reflects common multilingual programming practice and avoids mistranslating language-specific programming symbols.
 
 ---
 
 ## Tokenizers Evaluated
 
-| Tokenizer Label | Source | Notes |
+| Tokenizer Label | Source | Revision |
 |---|---|---|
-| `tiktoken_o200k` | OpenAI `o200k_base` via `tiktoken` | Used as the GPT-4o-family tokenizer in this audit |
-| `qwen2.5_7b` | `Qwen/Qwen2.5-7B` via Hugging Face `AutoTokenizer` | Tokenizer only; no model weights required |
-| `mistral_7b_v0.1` | `mistralai/Mistral-7B-v0.1` via Hugging Face `AutoTokenizer` | Tokenizer only; no model weights required |
+| `tiktoken_o200k` | OpenAI `o200k_base` via `tiktoken` | Provided by pinned `tiktoken` package |
+| `qwen2.5_7b` | `Qwen/Qwen2.5-7B` via Hugging Face `AutoTokenizer` | `d149729398750b98c0af14eb82c78cfe92750796` |
+| `mistral_7b_v0.1` | `mistralai/Mistral-7B-v0.1` via Hugging Face `AutoTokenizer` | `27d67f1b5f57dc0953326b2601d68371d40ea8da` |
 
 No model inference is required to reproduce the benchmark.
 
@@ -131,7 +137,8 @@ tea-benchmark/
 │   ├── tfr_by_item.csv
 │   ├── summary_stats.csv
 │   ├── acm_table.csv
-│   └── ecw_table.csv
+│   ├── ecw_table.csv
+│   └── token_split_T1-10.csv
 ├── figures/
 │   ├── tfr_by_language_tokenizer.pdf
 │   ├── tfr_by_language_tokenizer.png
@@ -144,13 +151,14 @@ tea-benchmark/
 │   ├── generate_tfr_figure.py
 │   ├── log_run.py
 │   └── token_split_table.py
+├── Tokenization Equity Audit.pdf
 ├── README.md
 ├── RUNBOOK.md
 ├── requirements.txt
 └── LICENSE
 ```
 
-Generated files are included to support review-time verification. They can also be regenerated from the source corpus and scripts.
+Generated files are included to support independent verification. They can also be regenerated from the source corpus and scripts.
 
 Generated outputs are deterministic given the same tokenizer versions and source corpus.
 
@@ -181,7 +189,7 @@ For full reproducible procedures, output documentation, and troubleshooting, see
 
 ## Reproducibility
 
-This artifact is designed to support anonymous review and independent reproduction.
+This artifact is designed to support independent reproduction of the published results.
 
 The pipeline performs the following steps:
 
@@ -198,9 +206,9 @@ The benchmark does not require GPU access.
 
 ## Translation and Validation Notes
 
-The Bengali subset was manually reviewed by Bengali-speaking reviewers with programming experience. 
+The Bengali subset was manually reviewed by two Bengali-speaking reviewers with programming experience. The Hindi subset was reviewed by a Hindi-speaking contributor familiar with technical programming terminology and instructional usage.
 
-Hindi, Arabic, Tamil, and Yoruba are included as exploratory comparison languages and should not be interpreted as fully validated pedagogical translations.
+Arabic, Tamil, and Yoruba were generated with machine translation and manually inspected for obvious semantic or formatting failures. They are exploratory comparisons and should not be interpreted as fully validated pedagogical translations.
 
 The benchmark’s strongest claim concerns Bengali technical tutoring content. Cross-language comparisons are intended to motivate broader tokenizer audits rather than claim final language-wide conclusions for every included language.
 
@@ -210,7 +218,7 @@ The benchmark’s strongest claim concerns Bengali technical tutoring content. C
 
 The corpus contains synthetic or benchmark-style programming education examples. It does not contain personal data, classroom logs, student submissions, names, emails, or institutional identifiers.
 
-The repository is prepared for anonymous review. Please avoid adding author names, institutional paths, compute-allocation identifiers, personal Git history, or acknowledgments until camera-ready release.
+The accepted paper is published as [`Tokenization Equity Audit.pdf`](Tokenization%20Equity%20Audit.pdf) at the repository root. The local camera-ready source package and LaTeX build files are excluded through `.gitignore`.
 
 ---
 

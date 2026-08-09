@@ -2,7 +2,7 @@
 
 This runbook explains how to reproduce the Tokenization Equity Audit (TEA) from a clean checkout. The artifact measures tokenization overhead across languages for a 120-item Python debugging and tutoring corpus.
 
-The runbook is intentionally anonymous. It does not include author names, institutions, compute allocations, local machine paths, or internal development history.
+The runbook focuses on the commands, inputs, and outputs needed to reproduce the published benchmark results.
 
 ---
 
@@ -101,11 +101,11 @@ python scripts/02_tokenize.py
 
 ### Tokenizers loaded
 
-| Internal Label | Source |
-|---|---|
-| `tiktoken_o200k` | `o200k_base` through `tiktoken` |
-| `qwen2.5_7b` | `Qwen/Qwen2.5-7B` through Hugging Face `AutoTokenizer` |
-| `mistral_7b_v0.1` | `mistralai/Mistral-7B-v0.1` through Hugging Face `AutoTokenizer` |
+| Internal Label | Source | Pinned revision |
+|---|---|---|
+| `tiktoken_o200k` | `o200k_base` through `tiktoken` | Provided by pinned `tiktoken` package |
+| `qwen2.5_7b` | `Qwen/Qwen2.5-7B` through Hugging Face `AutoTokenizer` | `d149729398750b98c0af14eb82c78cfe92750796` |
+| `mistral_7b_v0.1` | `mistralai/Mistral-7B-v0.1` through Hugging Face `AutoTokenizer` | `27d67f1b5f57dc0953326b2601d68371d40ea8da` |
 
 The script tokenizes all items across all six languages and all three tokenizers.
 
@@ -138,7 +138,26 @@ The PDF files are intended for LaTeX submission. PNG files are included only for
 
 ---
 
-## 6. Output File Reference
+## 6. Step 4 — Tokenizer Example Figure
+
+**Script:** `scripts/token_split_table.py`
+**Input:** `data/tea_corpus.csv` and an interactively selected item key
+**Outputs:**
+
+- `results/token_split_<key>.csv`
+- `figures/tokenizer_fragmentation_example.png`
+
+Run:
+
+```bash
+python scripts/token_split_table.py
+```
+
+The committed example uses item `T1-10`. The figure plots the exact token counts written to the corresponding CSV and can be regenerated without model inference.
+
+---
+
+## 7. Output File Reference
 
 ### `data/tea_corpus_flagged.csv`
 
@@ -204,7 +223,7 @@ ECW = 128000 / mean_TFR
 
 ---
 
-## 7. Re-running From Scratch
+## 8. Re-running From Scratch
 
 To regenerate all outputs:
 
@@ -230,7 +249,7 @@ python scripts\generate_tfr_figure.py
 
 ---
 
-## 8. Troubleshooting
+## 9. Troubleshooting
 
 ### `ModuleNotFoundError`
 

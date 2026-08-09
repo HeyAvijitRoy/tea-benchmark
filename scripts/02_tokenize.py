@@ -29,6 +29,17 @@ LANGUAGES = ["English", "Bengali", "Hindi", "Arabic", "Tamil", "Yoruba"]
 NOMINAL_WINDOW = 128_000
 GPT4O_PRICE_PER_1M = 2.50   # USD, input tokens
 
+HF_TOKENIZERS = {
+    "qwen2.5_7b": (
+        "Qwen/Qwen2.5-7B",
+        "d149729398750b98c0af14eb82c78cfe92750796",
+    ),
+    "mistral_7b_v0.1": (
+        "mistralai/Mistral-7B-v0.1",
+        "27d67f1b5f57dc0953326b2601d68371d40ea8da",
+    ),
+}
+
 
 # ── Tokenizer loaders ────────────────────────────────────────────────────────
 
@@ -39,14 +50,15 @@ def load_tiktoken(encoding_name: str = "o200k_base"):
     return enc
 
 
-def load_hf_tokenizer(model_id: str):
+def load_hf_tokenizer(model_id: str, revision: str):
     from transformers import AutoTokenizer
     tok = AutoTokenizer.from_pretrained(
         model_id,
+        revision=revision,
         use_fast=True,
         trust_remote_code=True,
     )
-    print(f"  [HuggingFace] Loaded '{model_id}'")
+    print(f"  [HuggingFace] Loaded '{model_id}' at revision {revision}")
     return tok
 
 
@@ -89,11 +101,13 @@ def main():
     print("\nLoading tokenizers ...")
     tiktoken_enc = load_tiktoken("o200k_base")
 
-    print("  Downloading Qwen/Qwen2.5-7B tokenizer (first run may take a moment) ...")
-    qwen_tok = load_hf_tokenizer("Qwen/Qwen2.5-7B")
+    qwen_id, qwen_revision = HF_TOKENIZERS["qwen2.5_7b"]
+    print(f"  Downloading {qwen_id} tokenizer (first run may take a moment) ...")
+    qwen_tok = load_hf_tokenizer(qwen_id, qwen_revision)
 
-    print("  Downloading mistralai/Mistral-7B-v0.1 tokenizer ...")
-    mistral_tok = load_hf_tokenizer("mistralai/Mistral-7B-v0.1")
+    mistral_id, mistral_revision = HF_TOKENIZERS["mistral_7b_v0.1"]
+    print(f"  Downloading {mistral_id} tokenizer ...")
+    mistral_tok = load_hf_tokenizer(mistral_id, mistral_revision)
 
     tokenizers = {
         "tiktoken_o200k": ("tiktoken", tiktoken_enc, count_tokens_tiktoken),
