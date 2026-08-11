@@ -1,36 +1,56 @@
 <div align="center">
 
-**Accepted for Oral Presentation and Poster at the Language Models for Underserved Communities (LM4UC) Workshop · IJCAI 2026**
-
+**Accepted for Oral Presentation and Poster at the Language Models for Underserved Communities (LM4UC) Workshop · IJCAI 2026**  
 Bremen, Germany · August 16, 2026
 
-[Read the accepted paper](Tokenization%20Equity%20Audit.pdf)
+[**arXiv Paper**](https://arxiv.org/abs/2608.09046) · [**arXiv PDF**](https://arxiv.org/pdf/2608.09046) · [**Repository PDF**](Tokenization%20Equity%20Audit.pdf)
 
 # Tokenization Equity Audit (TEA)
 
-### Measuring the Tokenization Premium for Underserved Language Communities
+### Measuring the Tokenization Premium: A Cost Audit for Underserved Language Communities
 
 <p>
-  <strong>A reproducible benchmark for auditing tokenization cost, context-window loss, and sequence-length overhead in multilingual technical tutoring content.</strong>
+<strong>A reproducible benchmark for auditing tokenization cost, context-window loss, and sequence-length overhead in multilingual technical tutoring content.</strong>
 </p>
 
 <p>
-  <img alt="Python" src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" />
-  <img alt="pandas" src="https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white" />
-  <img alt="NumPy" src="https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white" />
-  <img alt="Hugging Face" src="https://img.shields.io/badge/Hugging%20Face-FFD21E?style=for-the-badge&logo=huggingface&logoColor=000000" />
-  <img alt="Matplotlib" src="https://img.shields.io/badge/Matplotlib-11557C?style=for-the-badge&logo=matplotlib&logoColor=white" />
+<img alt="Python" src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" />
+<img alt="pandas" src="https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white" />
+<img alt="NumPy" src="https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white" />
+<img alt="Hugging Face" src="https://img.shields.io/badge/Hugging%20Face-FFD21E?style=for-the-badge&logo=huggingface&logoColor=000000" />
+<img alt="Matplotlib" src="https://img.shields.io/badge/Matplotlib-11557C?style=for-the-badge&logo=matplotlib&logoColor=white" />
 </p>
 
 <p>
-  <a href="#quickstart">Quickstart</a> •
-  <a href="#benchmark-summary">Benchmark Summary</a> •
-  <a href="#repository-structure">Repository Structure</a> •
-  <a href="#reproducibility">Reproducibility</a> •
-  <a href="#license">License</a>
+<a href="#paper">Paper</a> •
+<a href="#overview">Overview</a> •
+<a href="#benchmark-summary">Benchmark Summary</a> •
+<a href="#corpus">Corpus</a> •
+<a href="#tokenizers-evaluated">Tokenizers</a> •
+<a href="#metrics">Metrics</a> •
+<a href="#quickstart">Quickstart</a> •
+<a href="#repository-structure">Repository Structure</a> •
+<a href="#reproducibility">Reproducibility</a> •
+<a href="#citation">Citation</a> •
+<a href="#license">License</a>
 </p>
 
 </div>
+
+---
+
+## Paper
+
+**Measuring the Tokenization Premium: A Cost Audit for Underserved Language Communities**  
+Avijit Roy, Proma Roy, Hrishitva Patel
+
+**Language Models for Underserved Communities (LM4UC) Workshop at IJCAI 2026**  
+Bremen, Germany · August 16, 2026  
+**Oral Presentation and Poster**
+
+- **arXiv:** [arXiv:2608.09046](https://arxiv.org/abs/2608.09046)
+- **arXiv PDF:** [2608.09046.pdf](https://arxiv.org/pdf/2608.09046)
+- **Repository PDF:** [`Tokenization Equity Audit.pdf`](Tokenization%20Equity%20Audit.pdf)
 
 ---
 
@@ -38,7 +58,7 @@ Bremen, Germany · August 16, 2026
 
 Large language models process text as tokens, not as words, characters, or semantic units. When semantically equivalent content requires more tokens in one language than another, users of that language face measurable overhead: higher API cost, shorter effective context windows, and longer sequences for local inference.
 
-The **Tokenization Equity Audit (TEA)** measures this overhead in a focused technical education setting. The benchmark evaluates three tokenizers across a 120-item Python debugging and tutoring corpus translated from English into Bengali, Hindi, Arabic, Tamil, and Yoruba.
+The **Tokenization Equity Audit (TEA)** measures this overhead in a focused technical education setting. The benchmark evaluates three tokenizers across a **120-item Python debugging and tutoring corpus** translated from English into Bengali, Hindi, Arabic, Tamil, and Yoruba.
 
 Bengali and Hindi are the primary validated cases in this artifact. Arabic, Tamil, and Yoruba are included as exploratory comparison languages to test whether tokenization penalties vary across scripts and language families.
 
@@ -57,11 +77,11 @@ Bengali and Hindi are the primary validated cases in this artifact. Arabic, Tami
 | Tamil | 2.09× | 61,121 tokens (47.8%) | $0.14 |
 | Yoruba | 2.37× | 53,951 tokens (42.2%) | $0.18 |
 
-Under open-weight tokenizers, the disparity is substantially larger: Tamil exceeds 6.5× under both Qwen2.5 and Mistral, while Bengali and Hindi exceed 4–5× under multiple open-weight vocabularies.
+Under open-weight tokenizers, the disparity is substantially larger. Tamil exceeds **6.5×** under both Qwen2.5 and Mistral, while Bengali and Hindi exceed **4–5×** under multiple open-weight vocabularies.
 
 **TFR** means **Token Fertility Ratio**: the token count in a target language divided by the token count of the English version of the same item, using the same tokenizer.
 
-A TFR of 1.56× means the target-language version requires 56% more tokens than the English equivalent.
+A TFR of **1.56×** means the target-language version requires 56% more tokens than the English equivalent.
 
 ---
 
@@ -163,7 +183,9 @@ Generated files are included to support independent verification. They can also 
 Generated outputs are deterministic given the same tokenizer versions and source corpus.
 
 ---
+
 ## Quickstart
+
 ```bash
 # 1. Create and activate a virtual environment
 python3 -m venv .venv
@@ -185,7 +207,10 @@ python scripts/02_tokenize.py
 # 5. Step 3: figure generation
 python scripts/generate_tfr_figure.py
 ```
+
 For full reproducible procedures, output documentation, and troubleshooting, see [`RUNBOOK.md`](RUNBOOK.md).
+
+---
 
 ## Reproducibility
 
@@ -204,6 +229,8 @@ The pipeline performs the following steps:
 
 The benchmark does not require GPU access.
 
+---
+
 ## Translation and Validation Notes
 
 The Bengali subset was manually reviewed by two Bengali-speaking reviewers with programming experience. The Hindi subset was reviewed by a Hindi-speaking contributor familiar with technical programming terminology and instructional usage.
@@ -218,17 +245,37 @@ The benchmark’s strongest claim concerns Bengali technical tutoring content. C
 
 The corpus contains synthetic or benchmark-style programming education examples. It does not contain personal data, classroom logs, student submissions, names, emails, or institutional identifiers.
 
-The accepted paper is published as [`Tokenization Equity Audit.pdf`](Tokenization%20Equity%20Audit.pdf) at the repository root. The local camera-ready source package and LaTeX build files are excluded through `.gitignore`.
+The paper is publicly available on **arXiv as [arXiv:2608.09046](https://arxiv.org/abs/2608.09046)**. A repository copy is also provided as [`Tokenization Equity Audit.pdf`](Tokenization%20Equity%20Audit.pdf) at the repository root.
+
+The local camera-ready source package and LaTeX build files are excluded through `.gitignore`.
 
 ---
 
+## Citation
+
+If you use TEA, the benchmark data, or the accompanying code in academic work, please cite the paper:
+
+```bibtex
+@article{roy2026tokenizationpremium,
+  title   = {Measuring the Tokenization Premium: A Cost Audit for Underserved Language Communities},
+  author  = {Roy, Avijit and Roy, Proma and Patel, Hrishitva},
+  year    = {2026},
+  journal = {arXiv preprint arXiv:2608.09046},
+  url     = {https://arxiv.org/abs/2608.09046}
+}
+```
+
+The paper was accepted for **Oral Presentation and Poster** at the **Language Models for Underserved Communities (LM4UC) Workshop at IJCAI 2026**.
+
+---
 
 ## License
 
-This work is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International License** (CC-BY-NC 4.0).
+This work is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)**.
 
 You are free to:
+
 - Share and adapt the material for non-commercial purposes
 - Give appropriate credit to the original authors
 
-See the [LICENSE](LICENSE) file for full details.
+See the [`LICENSE`](LICENSE) file for full details.
