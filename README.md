@@ -207,6 +207,25 @@ Hindi translations retain far less English than the Bengali ones: all ten mixed 
 
 Full results, including medians, standard deviations and every tokenizer, are in `results/extension/hindi_script_share/`.
 
+### Technical vs General Text with Matched Aggregation
+
+The comparison table above sets FLORES-200 corpus ratios beside TEA mean TFRs. `scripts/07_domain_comparison.py` uses the same aggregation on both sides, the mean of per-item (TEA) or per-sentence (FLORES-200) ratios, and reports the domain gap (TEA − FLORES) with a 95% bootstrap CI. Before writing results it verifies that its `o200k_base` TEA means reproduce the published values (1.56, 1.72, 1.44, 2.09, 2.37) and that its FLORES means reproduce `results/flores_same_text/summary.csv`; both checks pass.
+
+| Tokenizer | Bengali TEA all / clean-only | Bengali FLORES | Bengali gap, all / clean-only | Hindi TEA all / clean-only | Hindi FLORES | Hindi gap, all / clean-only |
+|---|---:|---:|---:|---:|---:|---:|
+| `o200k_base` | 1.56× / 1.85× | 1.73× | −0.16 / +0.12 | 1.72× / 1.75× | 1.59× | +0.13 / +0.16 |
+| `mistral_nemo_tekken` / `nemotron` | 1.82× / 2.15× | 2.08× | −0.26 / +0.07† | 1.96× / 2.00× | 1.81× | +0.15 / +0.19 |
+| `deepseek_v3` | 1.79× / 2.14× | 2.04× | −0.25 / +0.09 | 3.02× / 3.11× | 2.85× | +0.17 / +0.26 |
+| `qwen2.5_7b` / `qwen3_8b` | 4.50× / 5.63× | 5.13× | −0.63 / +0.50 | 4.87× / 5.02× | 4.51× | +0.36 / +0.52 |
+| `mistral_7b_v0.1` | 4.44× / 5.57× | 5.02× | −0.58 / +0.55 | 5.20× / 5.37× | 4.66× | +0.54 / +0.71 |
+| `cl100k_base` | 5.18× / 6.51× | 5.91× | −0.73 / +0.60 | 5.25× / 5.43× | 4.85× | +0.40 / +0.58 |
+
+† 95% CI includes 0; every other gap in this table has a CI that excludes 0. Clean-only n = 62 (Bengali) and 110 (Hindi) of 120.
+
+With all items, Bengali is the only TEA language whose technical text costs fewer tokens than FLORES-200, under every tokenizer; restricted to clean items, the sign reverses and Bengali technical text costs more, as Hindi, Tamil and Yoruba do in all cases. The lower all-item Bengali figure therefore reflects retained English in the translations rather than a property of technical text. Arabic gaps are small (+0.05 to +0.34) and their CIs include 0 for half of the tokenizers.
+
+Full results for all five languages are in `results/extension/domain_comparison/` and `figures/extension/domain_gap_bengali_hindi.png`. A summary of all three extension tasks, including the tokenizer manifest, is in [`results/extension/EXTENSION_SUMMARY.md`](results/extension/EXTENSION_SUMMARY.md).
+
 ---
 
 ## Repository Structure
@@ -237,10 +256,13 @@ tea-benchmark/
 │       │   ├── per_sentence_counts.csv
 │       │   ├── summary.csv
 │       │   └── review_table.md
-│       └── hindi_script_share/
-│           ├── item_level.csv
-│           ├── label_distribution.csv
-│           ├── summary.csv
+│       ├── hindi_script_share/
+│       │   ├── item_level.csv
+│       │   ├── label_distribution.csv
+│       │   ├── summary.csv
+│       │   └── review_table.md
+│       └── domain_comparison/
+│           ├── domain_comparison.csv
 │           └── review_table.md
 ├── figures/
 │   ├── tfr_by_language_tokenizer.pdf
@@ -249,6 +271,8 @@ tea-benchmark/
 │   ├── ecw_by_language.png
 │   ├── tokenizer_fragmentation_example.png
 │   └── extension/
+│       ├── domain_gap_bengali_hindi.pdf
+│       ├── domain_gap_bengali_hindi.png
 │       ├── flores_open_weight_ratio.pdf
 │       └── flores_open_weight_ratio.png
 ├── scripts/
@@ -258,6 +282,7 @@ tea-benchmark/
 │   ├── 04_tokenizer_registry.py
 │   ├── 05_flores_open_weight.py
 │   ├── 06_hindi_script_share.py
+│   ├── 07_domain_comparison.py
 │   ├── generate_tfr_figure.py
 │   ├── log_run.py
 │   └── token_split_table.py

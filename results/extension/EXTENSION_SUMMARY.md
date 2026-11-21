@@ -63,3 +63,27 @@ Hindi labels use the Bengali procedure of `01_quality_check.py` with Devanagari 
 - Per-item Hindi TFRs reproduce TEA's `results/tfr_by_item.csv` for `o200k_base`, `qwen2.5_7b` and `mistral_7b_v0.1` (max difference < 1e-15).
 
 Files: `data/extension/tea_hindi_flagged.csv`, `results/extension/hindi_script_share/`.
+
+## Task 3 — Technical vs general text, matched aggregation
+
+Both sides use the mean of per-item (TEA) or per-sentence (FLORES-200) ratios. Gap = TEA − FLORES with a 95% bootstrap CI.
+
+Verification: `o200k_base` TEA means reproduce the published values (Bengali 1.5616 → 1.56, Hindi 1.7190 → 1.72, Arabic 1.4358 → 1.44, Tamil 2.0942 → 2.09, Yoruba 2.3725 → 2.37), and `o200k_base` FLORES means equal `results/flores_same_text/summary.csv` for all five languages. Both checks passed.
+
+Domain gap, all TEA items (Bengali clean-only in brackets):
+
+| Tokenizer | Bengali | Hindi | Arabic | Tamil | Yoruba |
+|---|---:|---:|---:|---:|---:|
+| `r50k_base` | −1.70 (+0.62) | +0.45 | +0.14 | +0.28 | +0.45 |
+| `cl100k_base` | −0.73 (+0.60) | +0.40 | +0.12 | +0.34 | +0.53 |
+| `o200k_base` / `o200k_harmony` | −0.16 (+0.12) | +0.13 | +0.05 | +0.10 | +0.18 |
+| `qwen2.5_7b` / `qwen3_8b` | −0.63 (+0.50) | +0.36 | +0.05 | +0.34 | +0.47 |
+| `mistral_7b_v0.1` | −0.58 (+0.55) | +0.54 | +0.34 | +0.62 | +0.45 |
+| `mistral_nemo_tekken` / `nemotron` | −0.26 (+0.07) | +0.15 | +0.08 | +0.12 | +0.43 |
+| `deepseek_v3` | −0.25 (+0.09) | +0.17 | +0.05 | +0.12 | +0.38 |
+
+- Bengali is the only language with a negative gap on all items, under every tokenizer; on clean-only items the gap is positive for every tokenizer (CI includes 0 only for Tekken/Nemotron).
+- Hindi gaps are positive for every tokenizer, all items and clean-only (+0.13 to +0.76), with CIs excluding 0.
+- Yoruba gaps are positive with CIs excluding 0 for all tokenizers; Tamil for 7 of 10; Arabic for 5 of 10.
+
+Files: `results/extension/domain_comparison/`, `figures/extension/domain_gap_bengali_hindi.png`.

@@ -432,3 +432,36 @@ Gated tokenizers follow the same rule as Section 11 (`huggingface-cli login` and
 | `results/extension/hindi_script_share/summary.csv` | Mean, median, SD and item count of Hindi TFR for `all` and `clean_only`, overall and per tier |
 | `results/extension/hindi_script_share/label_distribution.csv` | Items per label, overall and per tier |
 | `results/extension/hindi_script_share/review_table.md` | Label distribution and all-items vs clean-only table |
+
+---
+
+## 13. Extension — Technical vs General Text (Matched Aggregation)
+
+This step compares the TEA corpus with FLORES-200 using the same aggregation on both sides: the mean of per-item (TEA) or per-sentence (FLORES-200) ratios of tokens in the language to tokens in English.
+
+**Script:** `scripts/07_domain_comparison.py`  
+**Inputs:** `data/tea_corpus_flagged.csv`, `data/extension/tea_hindi_flagged.csv` (Section 12), `results/extension/tokenizer_manifest.csv` and `results/extension/flores_open_weight/` (Section 11), `results/flores_same_text/summary.csv` (Section 10)
+
+### What the script does
+
+1. Computes per-item TFR on the 120-item TEA corpus for every tokenizer marked `ran`, exactly as `02_tokenize.py` does.
+2. Aggregates TEA by mean per-item TFR for all items in every language, plus clean-only items for Bengali (`bn_quality == "clean"`) and Hindi (`hi_quality == "clean"`).
+3. Joins with the Task 1 FLORES-200 mean per-sentence ratios (corpus ratio included for reference) and reports the domain gap, TEA mean − FLORES mean, with its sign and a 95% bootstrap CI (TEA items and FLORES sentences resampled independently; 2,000 resamples; seed 42).
+4. Verifies, before writing any output, that the `o200k_base` TEA means round to the published TEA values (Bengali 1.56, Hindi 1.72, Arabic 1.44, Tamil 2.09, Yoruba 2.37) and that the `o200k_base` FLORES means equal `results/flores_same_text/summary.csv`. If either check fails, the script prints the discrepancy and exits without writing results.
+
+### Run
+
+```bash
+python scripts/07_domain_comparison.py --self-test
+python scripts/07_domain_comparison.py
+```
+
+Run Sections 11 and 12 first. Gated tokenizers follow the same rule as Section 11. Expected runtime: under 1 minute with a warm cache.
+
+### Outputs
+
+| File | Contents |
+|---|---|
+| `results/extension/domain_comparison/domain_comparison.csv` | Per tokenizer × language × TEA subset: TEA n, mean and median TFR; FLORES n, mean and median per-sentence ratio and corpus ratio; domain gap with 95% CI; sign of the gap (marked when the CI includes 0) |
+| `results/extension/domain_comparison/review_table.md` | The same comparison as a Markdown table |
+| `figures/extension/domain_gap_bengali_hindi.png` / `.pdf` | Paired points per tokenizer for Bengali and Hindi: FLORES mean, TEA all-items mean, TEA clean-only mean |
