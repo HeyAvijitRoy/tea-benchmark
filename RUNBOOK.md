@@ -348,8 +348,10 @@ This step extends Section 10 to a pinned registry of current tokenizers. It need
 | `r50k_base`, `cl100k_base`, `o200k_base`, `o200k_harmony` | `tiktoken` encodings | fixed by the pinned `tiktoken` package |
 | `qwen2.5_7b` | `Qwen/Qwen2.5-7B` | `d149729398750b98c0af14eb82c78cfe92750796` |
 | `qwen3_8b` | `Qwen/Qwen3-8B` | `b968826d9c46dd6066d109eabc6255188de91218` |
+| `qwen3.8_2.4t` | `Qwen/Qwen3.8-2.4T-A95B` (reported run used a local copy) | `4f885e51d6bbfee5866446d56d3f96f336c39723` |
 | `llama3.1_8b` | `meta-llama/Llama-3.1-8B` (gated) | `d04e592bb4f6aa9cfee91e2e20afa771667e1d4b` |
 | `gemma3_4b` | `google/gemma-3-4b-it` (gated; reported run used a local copy) | `093f9f388b31de276ce2de164bdc2081324b9767` |
+| `gemma4_e2b` | `google/gemma-4-E2B-it` (reported run used a local copy) | `4adf15748de9e1a0097b6274cee9c15836c41c37` |
 | `mistral_7b_v0.1` | `mistralai/Mistral-7B-v0.1` | `27d67f1b5f57dc0953326b2601d68371d40ea8da` |
 | `mistral_nemo_tekken` | `mistralai/Mistral-Nemo-Base-2407` | `a4477a2f977929a969745b69bbd62e03043551a5` |
 | `deepseek_v3` | `deepseek-ai/DeepSeek-V3` | `e815299b0bcbac849fa540c768ef21845365c9eb` |
@@ -371,7 +373,7 @@ Alternatively, set `HF_TOKEN` in the environment for the session. Never commit a
 
 If a folder `data/tokenizers/<label>/` exists, the registry loads that Hugging Face tokenizer from the folder with `AutoTokenizer.from_pretrained(<folder>)` instead of downloading it, and the manifest records its source as `local copy of <repo>@<revision>`. All other tokenizers load as before. This is useful when Hugging Face cannot be reached from the machine running the scripts, or when gated files were obtained on another machine.
 
-- **Where:** one folder per registry label, e.g. `data/tokenizers/gemma3_4b/`, holding the tokenizer files (`tokenizer.json`, `tokenizer_config.json`, `special_tokens_map.json`, plus `tokenizer.model` and `added_tokens.json` where the repository has them).
+- **Where:** one folder per registry label, e.g. `data/tokenizers/gemma3_4b/`, holding the tokenizer files (`tokenizer.json`, `tokenizer_config.json`, plus `special_tokens_map.json`, `added_tokens.json`, `tokenizer.model`, `vocab.json` and `merges.txt` where the repository has them). The reported run used local copies for `gemma3_4b`, `gemma4_e2b` and `qwen3.8_2.4t`.
 - **Git:** `data/tokenizers/` is git-ignored. Some model licences (including Gemma's) do not allow redistributing these files, so never commit them.
 - **Download at the pinned revision** (licence accepted, logged in), on any machine with access:
 
@@ -382,7 +384,7 @@ huggingface-cli download google/gemma-3-4b-it \
   --local-dir data/tokenizers/gemma3_4b
 ```
 
-The files can also be fetched in a browser from `https://huggingface.co/<repo>/resolve/<revision>/<file>`. Use exactly the revision listed in the table above, so that results stay comparable.
+The files can also be fetched from `https://huggingface.co/<repo>/resolve/<revision>/<file>` with any HTTP client (send `Authorization: Bearer <token>` for gated repositories; in Windows PowerShell 5.1, set `[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12` first). Check that each downloaded `tokenizer.json` matches the size and SHA-256 listed for it by `https://huggingface.co/api/models/<repo>/revision/<revision>?blobs=true`. Use exactly the revision listed in the table above, so that results stay comparable.
 
 To run without network access, the other Hugging Face tokenizers must already be in the local cache; set `HF_HUB_OFFLINE=1` (PowerShell: `$env:HF_HUB_OFFLINE = "1"`) so they load from it. The reported Gemma 3 results were produced this way.
 
@@ -484,3 +486,43 @@ Run Sections 11 and 12 first. Gated tokenizers follow the same rule as Section 1
 | `results/extension/domain_comparison/domain_comparison.csv` | Per tokenizer × language × TEA subset: TEA n, mean and median TFR; FLORES n, mean and median per-sentence ratio and corpus ratio; domain gap with 95% CI; sign of the gap (marked when the CI includes 0) |
 | `results/extension/domain_comparison/review_table.md` | The same comparison as a Markdown table |
 | `figures/extension/domain_gap_bengali_hindi.png` / `.pdf` | Paired points per tokenizer for Bengali and Hindi: FLORES mean, TEA all-items mean, TEA clean-only mean |
+
+---
+
+## 14. Extension — Fixed English Baseline
+
+Each same-text ratio divides by the same tokenizer's English count, so it combines the cost of the language with how efficiently that tokenizer encodes English. This step adds a ratio with a fixed English denominator shared by all tokenizers. It needs no tokenizer and no network access.
+
+**Script:** `scripts/08_fixed_baseline.py`  
+**Input:** `results/extension/flores_open_weight/per_sentence_counts.csv` (Section 11)
+
+### What the script does
+
+For every tokenizer and language, over the 997 FLORES-200 dev sentences:
+
+```text
+own_ratio   = sum(tokens_L, tokenizer)  / sum(tokens_EN, tokenizer)     (Section 11 corpus ratio)
+fixed_ratio = sum(tokens_L, tokenizer)  / sum(tokens_EN, o200k_base)
+en_relative = sum(tokens_EN, tokenizer) / sum(tokens_EN, o200k_base)
+```
+
+so `fixed_ratio = own_ratio × en_relative`. With the default reference, the script first checks three known values (`gemma3_4b`: Bengali 1.21 own / 1.23 fixed, Tamil 1.47 / 1.49, English 1.014) and exits without writing outputs if they do not reproduce.
+
+### Run
+
+```bash
+python scripts/08_fixed_baseline.py --self-test
+python scripts/08_fixed_baseline.py
+
+# Another reference tokenizer (the known-value check is skipped)
+python scripts/08_fixed_baseline.py --reference cl100k_base
+```
+
+Expected runtime: a few seconds.
+
+### Outputs (`results/extension/fixed_baseline/`)
+
+| File | Contents |
+|---|---|
+| `summary.csv` | Per tokenizer × language: sentences, total tokens, own and reference English totals, reference label, `own_ratio`, `fixed_ratio`, `en_relative` |
+| `review_table.md` | Own / fixed ratio per language and English relative to the reference, one row per tokenizer |

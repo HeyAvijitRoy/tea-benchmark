@@ -106,12 +106,21 @@ REGISTRY: list[TokenizerSpec] = [
                   "existing TEA pin (02_tokenize.py)"),
     TokenizerSpec("qwen3_8b", "hf", "Qwen/Qwen3-8B",
                   "b968826d9c46dd6066d109eabc6255188de91218"),
+    TokenizerSpec("qwen3.8_2.4t", "hf", "Qwen/Qwen3.8-2.4T-A95B",
+                  "4f885e51d6bbfee5866446d56d3f96f336c39723",
+                  "Newest Qwen LLM family (Qwen3.8) at resolution time; the only text-generation "
+                  "model of the family. Its tokenizer.json is byte-identical to those of "
+                  "Qwen3.8-27B and Qwen3.8-Flash-Next. Loaded from data/tokenizers/."),
     TokenizerSpec("llama3.1_8b", "hf", "meta-llama/Llama-3.1-8B",
                   "d04e592bb4f6aa9cfee91e2e20afa771667e1d4b",
                   "gated: needs Hugging Face login and licence acceptance"),
     TokenizerSpec("gemma3_4b", "hf", "google/gemma-3-4b-it",
                   "093f9f388b31de276ce2de164bdc2081324b9767",
                   "gated: needs Hugging Face login and licence acceptance"),
+    TokenizerSpec("gemma4_e2b", "hf", "google/gemma-4-E2B-it",
+                  "4adf15748de9e1a0097b6274cee9c15836c41c37",
+                  "Smallest Gemma 4 model (E2B), instruct variant as for gemma3_4b. "
+                  "Loaded from data/tokenizers/."),
     TokenizerSpec("mistral_7b_v0.1", "hf", "mistralai/Mistral-7B-v0.1",
                   "27d67f1b5f57dc0953326b2601d68371d40ea8da",
                   "existing TEA pin (02_tokenize.py)"),
