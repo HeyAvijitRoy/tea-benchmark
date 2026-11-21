@@ -394,3 +394,41 @@ Each download is retried up to 5 times with exponential backoff (5, 10, 20, 40 s
 | `figures/extension/flores_open_weight_ratio.png` / `.pdf` | Corpus ratio by language and tokenizer with CI error bars and a 1.5× reference line |
 
 The loading, counting and summary functions are imported from `03_flores_same_text.py`, so the `o200k_base`, `cl100k_base` and `r50k_base` rows reproduce `results/flores_same_text/summary.csv` exactly.
+
+---
+
+## 12. Extension — Hindi Script-Share Sensitivity
+
+This step extends the Bengali clean-only analysis (Step 1) to Hindi. It reads the corpus and never modifies it.
+
+**Script:** `scripts/06_hindi_script_share.py`  
+**Inputs:** `data/tea_corpus_flagged.csv`, `results/extension/tokenizer_manifest.csv` (from Section 11)
+
+### What the script does
+
+1. Computes `hi_script_share` = Devanagari characters / (Devanagari characters + Latin letters). Devanagari characters are letters and combining marks (vowel signs, virama, nukta) in U+0900–U+097F and U+A8E0–U+A8FF; digits and punctuation such as the danda are ignored, as is every non-alphabetic character.
+2. Assigns `hi_quality` with the thresholds and function from `01_quality_check.py`: `clean` (≥ 0.75), `mixed` (0.40–0.75), `english_retained` (< 0.40).
+3. For every tokenizer marked `ran` in the manifest, computes per-item Hindi TFR exactly as `02_tokenize.py` does, and summarizes all items vs clean-only items, overall and by tier.
+4. Checks its per-item TFRs against `results/tfr_by_item.csv` for the three TEA tokenizers, and reports how many labels would change if every code point in the Devanagari block were counted (the way Step 1 counts the Bengali block).
+
+### Run
+
+```bash
+python scripts/06_hindi_script_share.py --self-test
+python scripts/06_hindi_script_share.py
+
+# Restrict tokenizers
+python scripts/06_hindi_script_share.py --labels o200k_base qwen2.5_7b
+```
+
+Gated tokenizers follow the same rule as Section 11 (`huggingface-cli login` and licence acceptance); a tokenizer that cannot be loaded is skipped with a warning. Expected runtime: under 1 minute with a warm cache.
+
+### Outputs
+
+| File | Contents |
+|---|---|
+| `data/extension/tea_hindi_flagged.csv` | `Key`, `tier`, `hi_script_share`, `hi_quality` |
+| `results/extension/hindi_script_share/item_level.csv` | Per item and tokenizer: script share, label, Hindi and English token counts, TFR |
+| `results/extension/hindi_script_share/summary.csv` | Mean, median, SD and item count of Hindi TFR for `all` and `clean_only`, overall and per tier |
+| `results/extension/hindi_script_share/label_distribution.csv` | Items per label, overall and per tier |
+| `results/extension/hindi_script_share/review_table.md` | Label distribution and all-items vs clean-only table |

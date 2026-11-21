@@ -46,3 +46,20 @@ Same-text corpus ratio (total tokens / total English tokens) on the 997 FLORES-2
 - Identical counts on every sentence: `o200k_harmony` = `o200k_base`, `qwen3_8b` = `qwen2.5_7b`, `nemotron` = `mistral_nemo_tekken`.
 
 Files: `results/extension/flores_open_weight/`, `figures/extension/flores_open_weight_ratio.png`.
+
+## Task 2 — Hindi script-share sensitivity (TEA corpus)
+
+Hindi labels use the Bengali procedure of `01_quality_check.py` with Devanagari letters and combining marks. Distribution over 120 items: clean 110 (T1 25, T2 50, T3 35), mixed 10 (all T1), english_retained 0. Bengali for comparison: 62 / 50 / 8.
+
+| Tokenizer | All items (n = 120) | Clean-only (n = 110) | T1 all → clean-only |
+|---|---:|---:|---:|
+| `o200k_base` | 1.72× | 1.75× | 1.86× → 2.03× |
+| `mistral_nemo_tekken` / `nemotron` | 1.96× | 2.00× | 2.11× → 2.36× |
+| `deepseek_v3` | 3.02× | 3.11× | 3.10× → 3.52× |
+| `qwen2.5_7b` / `qwen3_8b` | 4.87× | 5.02× | 4.79× → 5.46× |
+| `mistral_7b_v0.1` | 5.20× | 5.37× | 5.08× → 5.79× |
+
+- Retained English is a minor factor for Hindi overall (+0.03 under `o200k_base`) but matters within T1 (+0.17).
+- Per-item Hindi TFRs reproduce TEA's `results/tfr_by_item.csv` for `o200k_base`, `qwen2.5_7b` and `mistral_7b_v0.1` (max difference < 1e-15).
+
+Files: `data/extension/tea_hindi_flagged.csv`, `results/extension/hindi_script_share/`.

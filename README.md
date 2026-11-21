@@ -185,6 +185,28 @@ English costs between 25.6 and 28.6 tokens per sentence under every tokenizer, s
 
 Results for all five languages are in `results/extension/flores_open_weight/` and `figures/extension/flores_open_weight_ratio.png`.
 
+### Hindi Script-Share Sensitivity on the TEA Corpus
+
+The paper's code-switching sensitivity analysis covers Bengali only. `scripts/06_hindi_script_share.py` applies the same labels and thresholds to Hindi, using the Devanagari share of alphabetic characters (letters and combining marks in U+0900–U+097F and U+A8E0–U+A8FF, against Latin letters). Labels are written to `data/extension/tea_hindi_flagged.csv`; the original corpus files are unchanged.
+
+| Label | Hindi items | T1 | T2 | T3 | Bengali items (for comparison) |
+|---|---:|---:|---:|---:|---:|
+| clean (≥ 0.75) | 110 | 25 | 50 | 35 | 62 |
+| mixed (0.40–0.75) | 10 | 10 | 0 | 0 | 50 |
+| english_retained (< 0.40) | 0 | 0 | 0 | 0 | 8 |
+
+| Tokenizer | Hindi mean TFR, all items (n = 120) | Clean-only (n = 110) | T1 all (n = 35) | T1 clean-only (n = 25) |
+|---|---:|---:|---:|---:|
+| `o200k_base` | 1.72× | 1.75× | 1.86× | 2.03× |
+| `mistral_nemo_tekken` / `nemotron` | 1.96× | 2.00× | 2.11× | 2.36× |
+| `deepseek_v3` | 3.02× | 3.11× | 3.10× | 3.52× |
+| `qwen2.5_7b` / `qwen3_8b` | 4.87× | 5.02× | 4.79× | 5.46× |
+| `mistral_7b_v0.1` | 5.20× | 5.37× | 5.08× | 5.79× |
+
+Hindi translations retain far less English than the Bengali ones: all ten mixed items are short T1 items, and none is English-retained. Excluding them raises mean Hindi TFR by 0.03 under `o200k_base` overall and by 0.17 within T1, so Hindi's published TEA figure is only slightly suppressed by retained English, unlike Bengali's.
+
+Full results, including medians, standard deviations and every tokenizer, are in `results/extension/hindi_script_share/`.
+
 ---
 
 ## Repository Structure
@@ -194,7 +216,9 @@ tea-benchmark/
 ├── data/
 │   ├── tea_corpus.csv
 │   ├── tea_corpus_flagged.csv
-│   └── quality_report.txt
+│   ├── quality_report.txt
+│   └── extension/
+│       └── tea_hindi_flagged.csv
 ├── results/
 │   ├── raw_token_counts.csv
 │   ├── tfr_by_item.csv
@@ -209,8 +233,13 @@ tea-benchmark/
 │   └── extension/
 │       ├── EXTENSION_SUMMARY.md
 │       ├── tokenizer_manifest.csv
-│       └── flores_open_weight/
-│           ├── per_sentence_counts.csv
+│       ├── flores_open_weight/
+│       │   ├── per_sentence_counts.csv
+│       │   ├── summary.csv
+│       │   └── review_table.md
+│       └── hindi_script_share/
+│           ├── item_level.csv
+│           ├── label_distribution.csv
 │           ├── summary.csv
 │           └── review_table.md
 ├── figures/
@@ -228,6 +257,7 @@ tea-benchmark/
 │   ├── 03_flores_same_text.py
 │   ├── 04_tokenizer_registry.py
 │   ├── 05_flores_open_weight.py
+│   ├── 06_hindi_script_share.py
 │   ├── generate_tfr_figure.py
 │   ├── log_run.py
 │   └── token_split_table.py
