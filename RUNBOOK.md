@@ -282,3 +282,52 @@ Key, English, Bengali, Hindi, Arabic, Tamil, Yoruba
 ```
 
 Column names are case-sensitive.
+
+---
+
+## 10. Extension — FLORES-200 Same-Text Ratios
+
+This optional step compares TEA's technical-domain results with general-domain text. It does not change any of the published TEA outputs.
+
+### Download FLORES-200
+
+FLORES-200 is distributed separately under its own license and is git-ignored in this repository.
+
+```bash
+# Linux / macOS
+curl -L -o data/flores200_dataset.tar.gz https://dl.fbaipublicfiles.com/nllb/flores200_dataset.tar.gz
+tar -xzf data/flores200_dataset.tar.gz -C data
+```
+
+Windows PowerShell:
+
+```powershell
+Invoke-WebRequest https://dl.fbaipublicfiles.com/nllb/flores200_dataset.tar.gz -OutFile data\flores200_dataset.tar.gz
+tar -xzf data\flores200_dataset.tar.gz -C data
+```
+
+### Run
+
+```bash
+# Check the statistics code on synthetic data (no network needed)
+python scripts/03_flores_same_text.py --self-test
+
+# OpenAI encodings (r50k_base, cl100k_base, o200k_base)
+python scripts/03_flores_same_text.py --flores-dir data/flores200_dataset
+
+# Also include the Qwen2.5-7B and Mistral-7B tokenizers pinned in Step 2
+python scripts/03_flores_same_text.py --flores-dir data/flores200_dataset --include-hf
+```
+
+Options: `--languages` restricts the language set (English is always included), `--threshold` changes the per-sentence threshold (default 1.5), and `--reference-csv` points to an optional CSV of externally reported ratios (`language,tokenizer,reference`) for a reproduction check. The default reference file, `data/reference_ratios.local.csv`, is git-ignored.
+
+### Outputs (`results/flores_same_text/`)
+
+| File | Contents |
+|---|---|
+| `per_sentence_counts.csv` | Token and whitespace-word counts per sentence, language, and tokenizer |
+| `summary.csv` | Corpus ratio with 95% bootstrap CI, mean/median/SD of per-sentence ratios, share of sentences above the threshold, tokens per word, and per-word ratio |
+| `review_table.md` | Compact Markdown table of the main results |
+| `sanity_check.csv` | Comparison with reference values (only written when a reference CSV is supplied; git-ignored) |
+
+The bootstrap uses 2,000 resamples of sentence pairs with a fixed seed (42), so results are deterministic for a given tokenizer version. The run reported in the README used `tiktoken` 0.12.0.

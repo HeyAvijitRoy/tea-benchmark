@@ -57,3 +57,5 @@ data/*.local.csv
 results/flores_same_text/sanity_check.csv
 
 .local/
+# Local development log (written by scripts/log_run.py)
+Notes.md

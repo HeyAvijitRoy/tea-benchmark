@@ -144,6 +144,28 @@ ECW estimates how much semantically equivalent content fits into the same token 
 
 ---
 
+## Extension: FLORES-200 Same-Text Comparison
+
+TEA measures a technical tutoring domain. To compare it with general-domain text, `scripts/03_flores_same_text.py` measures the same-text token ratio on the 997 parallel sentences of the FLORES-200 development set (NLLB Team, 2022) for the same six languages, using OpenAI's public `r50k_base`, `cl100k_base`, and `o200k_base` encodings (and, optionally, the two open-weight tokenizers TEA pins).
+
+For each language and tokenizer, the script reports the corpus-level ratio (total tokens / total English tokens) with a 95% bootstrap confidence interval, the mean and median per-sentence ratio (the TEA measure), the share of sentences above a threshold (default 1.5×), and the tokens-per-word ratio relative to English.
+
+### FLORES-200 Results on `o200k_base`
+
+| Language | Corpus ratio (95% CI) | Mean / median per-sentence | Sentences above 1.5× | Per-word ratio | TEA mean TFR |
+|---|---:|---:|---:|---:|---:|
+| Arabic | 1.38× (1.37–1.40) | 1.39× / 1.38× | 29% | 1.54× | 1.44× |
+| Hindi | 1.58× (1.56–1.59) | 1.59× / 1.57× | 59% | 1.34× | 1.72× |
+| Bengali | 1.71× (1.69–1.73) | 1.73× / 1.69× | 78% | 1.91× | 1.56× |
+| Tamil | 1.98× (1.95–2.00) | 1.99× / 1.96× | 95% | 2.57× | 2.09× |
+| Yoruba | 2.18× (2.14–2.22) | 2.20× / 2.16× | 85% | 1.88× | 2.37× |
+
+Two observations follow. First, a corpus ratio below a threshold can coexist with a substantial share of sentences above it (Arabic: 1.38× overall, 29% of sentences above 1.5×), so distributions should be reported beside averages. Second, the effect of domain is not uniform in direction: Hindi is higher on TEA's technical corpus than on FLORES-200, while Bengali is lower, consistent with the suppression effect of retained English identifiers reported for technical Bengali (Section 5.3 of the paper; TEA's clean-only Bengali items run 1.79–2.11×).
+
+Full results for all three encodings are in `results/flores_same_text/`. FLORES-200 is not redistributed here; see [`RUNBOOK.md`](RUNBOOK.md) for download instructions.
+
+---
+
 ## Repository Structure
 
 ```text
@@ -158,7 +180,11 @@ tea-benchmark/
 │   ├── summary_stats.csv
 │   ├── acm_table.csv
 │   ├── ecw_table.csv
-│   └── token_split_T1-10.csv
+│   ├── token_split_T1-10.csv
+│   └── flores_same_text/
+│       ├── per_sentence_counts.csv
+│       ├── summary.csv
+│       └── review_table.md
 ├── figures/
 │   ├── tfr_by_language_tokenizer.pdf
 │   ├── tfr_by_language_tokenizer.png
@@ -168,6 +194,7 @@ tea-benchmark/
 ├── scripts/
 │   ├── 01_quality_check.py
 │   ├── 02_tokenize.py
+│   ├── 03_flores_same_text.py
 │   ├── generate_tfr_figure.py
 │   ├── log_run.py
 │   └── token_split_table.py
@@ -206,6 +233,10 @@ python scripts/02_tokenize.py
 
 # 5. Step 3: figure generation
 python scripts/generate_tfr_figure.py
+
+# 6. Optional extension: FLORES-200 same-text comparison
+#    (download FLORES-200 first; see RUNBOOK.md, Section 10)
+python scripts/03_flores_same_text.py --flores-dir data/flores200_dataset
 ```
 
 For full reproducible procedures, output documentation, and troubleshooting, see [`RUNBOOK.md`](RUNBOOK.md).
