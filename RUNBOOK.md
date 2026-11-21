@@ -349,7 +349,7 @@ This step extends Section 10 to a pinned registry of current tokenizers. It need
 | `qwen2.5_7b` | `Qwen/Qwen2.5-7B` | `d149729398750b98c0af14eb82c78cfe92750796` |
 | `qwen3_8b` | `Qwen/Qwen3-8B` | `b968826d9c46dd6066d109eabc6255188de91218` |
 | `llama3.1_8b` | `meta-llama/Llama-3.1-8B` (gated) | `d04e592bb4f6aa9cfee91e2e20afa771667e1d4b` |
-| `gemma3_4b` | `google/gemma-3-4b-it` (gated) | `093f9f388b31de276ce2de164bdc2081324b9767` |
+| `gemma3_4b` | `google/gemma-3-4b-it` (gated; reported run used a local copy) | `093f9f388b31de276ce2de164bdc2081324b9767` |
 | `mistral_7b_v0.1` | `mistralai/Mistral-7B-v0.1` | `27d67f1b5f57dc0953326b2601d68371d40ea8da` |
 | `mistral_nemo_tekken` | `mistralai/Mistral-Nemo-Base-2407` | `a4477a2f977929a969745b69bbd62e03043551a5` |
 | `deepseek_v3` | `deepseek-ai/DeepSeek-V3` | `e815299b0bcbac849fa540c768ef21845365c9eb` |
@@ -366,6 +366,25 @@ huggingface-cli login        # or: hf auth login
 ```
 
 Alternatively, set `HF_TOKEN` in the environment for the session. Never commit a token; `.env` is git-ignored.
+
+### Local tokenizer files (optional)
+
+If a folder `data/tokenizers/<label>/` exists, the registry loads that Hugging Face tokenizer from the folder with `AutoTokenizer.from_pretrained(<folder>)` instead of downloading it, and the manifest records its source as `local copy of <repo>@<revision>`. All other tokenizers load as before. This is useful when Hugging Face cannot be reached from the machine running the scripts, or when gated files were obtained on another machine.
+
+- **Where:** one folder per registry label, e.g. `data/tokenizers/gemma3_4b/`, holding the tokenizer files (`tokenizer.json`, `tokenizer_config.json`, `special_tokens_map.json`, plus `tokenizer.model` and `added_tokens.json` where the repository has them).
+- **Git:** `data/tokenizers/` is git-ignored. Some model licences (including Gemma's) do not allow redistributing these files, so never commit them.
+- **Download at the pinned revision** (licence accepted, logged in), on any machine with access:
+
+```bash
+huggingface-cli download google/gemma-3-4b-it \
+  tokenizer.json tokenizer.model tokenizer_config.json special_tokens_map.json added_tokens.json \
+  --revision 093f9f388b31de276ce2de164bdc2081324b9767 \
+  --local-dir data/tokenizers/gemma3_4b
+```
+
+The files can also be fetched in a browser from `https://huggingface.co/<repo>/resolve/<revision>/<file>`. Use exactly the revision listed in the table above, so that results stay comparable.
+
+To run without network access, the other Hugging Face tokenizers must already be in the local cache; set `HF_HUB_OFFLINE=1` (PowerShell: `$env:HF_HUB_OFFLINE = "1"`) so they load from it. The reported Gemma 3 results were produced this way.
 
 ### Run
 
@@ -387,7 +406,7 @@ Each download is retried up to 5 times with exponential backoff (5, 10, 20, 40 s
 
 | File | Contents |
 |---|---|
-| `results/extension/tokenizer_manifest.csv` | Label, source, revision, vocabulary size, tokenizer type, library version, status (`ran` / `skipped`), skip reason, note |
+| `results/extension/tokenizer_manifest.csv` | Label, source (`local copy of <repo>@<revision>` for local folders), revision, vocabulary size, tokenizer type, library version, status (`ran` / `skipped`), skip reason, note |
 | `results/extension/flores_open_weight/summary.csv` | Per language × tokenizer: corpus ratio with 95% bootstrap CI, mean/median/SD of per-sentence ratios, share of sentences above 1.5× and 2.0×, tokens per word, per-word ratio, mean tokens per sentence (language and English) |
 | `results/extension/flores_open_weight/per_sentence_counts.csv` | Token and whitespace-word counts per sentence, language, and tokenizer |
 | `results/extension/flores_open_weight/review_table.md` | Compact Markdown table, sorted by tokenizer then language |

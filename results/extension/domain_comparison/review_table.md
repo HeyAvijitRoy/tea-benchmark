@@ -12,6 +12,8 @@
 | Bengali | qwen2.5_7b | clean_only (62) | 5.62× | 5.13× | +0.50 (+0.28 to +0.73) | TEA higher | 5.05× |
 | Bengali | qwen3_8b | all (120) | 4.50× | 5.13× | -0.63 (-0.90 to -0.36) | FLORES higher | 5.05× |
 | Bengali | qwen3_8b | clean_only (62) | 5.62× | 5.13× | +0.50 (+0.28 to +0.73) | TEA higher | 5.05× |
+| Bengali | gemma3_4b | all (120) | 1.29× | 1.22× | +0.07 (+0.02 to +0.12) | TEA higher | 1.21× |
+| Bengali | gemma3_4b | clean_only (62) | 1.45× | 1.22× | +0.23 (+0.17 to +0.29) | TEA higher | 1.21× |
 | Bengali | mistral_7b_v0.1 | all (120) | 4.44× | 5.02× | -0.58 (-0.85 to -0.31) | FLORES higher | 4.93× |
 | Bengali | mistral_7b_v0.1 | clean_only (62) | 5.57× | 5.02× | +0.55 (+0.33 to +0.78) | TEA higher | 4.93× |
 | Bengali | mistral_nemo_tekken | all (120) | 1.82× | 2.08× | -0.26 (-0.35 to -0.17) | FLORES higher | 2.06× |
@@ -32,6 +34,8 @@
 | Hindi | qwen2.5_7b | clean_only (110) | 5.02× | 4.51× | +0.51 (+0.37 to +0.66) | TEA higher | 4.45× |
 | Hindi | qwen3_8b | all (120) | 4.86× | 4.51× | +0.36 (+0.18 to +0.53) | TEA higher | 4.45× |
 | Hindi | qwen3_8b | clean_only (110) | 5.02× | 4.51× | +0.51 (+0.37 to +0.66) | TEA higher | 4.45× |
+| Hindi | gemma3_4b | all (120) | 1.42× | 1.33× | +0.09 (+0.04 to +0.15) | TEA higher | 1.32× |
+| Hindi | gemma3_4b | clean_only (110) | 1.44× | 1.33× | +0.12 (+0.07 to +0.17) | TEA higher | 1.32× |
 | Hindi | mistral_7b_v0.1 | all (120) | 5.20× | 4.66× | +0.54 (+0.35 to +0.73) | TEA higher | 4.58× |
 | Hindi | mistral_7b_v0.1 | clean_only (110) | 5.37× | 4.66× | +0.71 (+0.55 to +0.87) | TEA higher | 4.58× |
 | Hindi | mistral_nemo_tekken | all (120) | 1.96× | 1.81× | +0.15 (+0.08 to +0.22) | TEA higher | 1.79× |
@@ -46,6 +50,7 @@
 | Arabic | o200k_harmony | all (120) | 1.44× | 1.39× | +0.05 (-0.00 to +0.09) | TEA higher (CI includes 0) | 1.38× |
 | Arabic | qwen2.5_7b | all (120) | 1.70× | 1.64× | +0.05 (-0.00 to +0.11) | TEA higher (CI includes 0) | 1.63× |
 | Arabic | qwen3_8b | all (120) | 1.70× | 1.64× | +0.05 (-0.00 to +0.11) | TEA higher (CI includes 0) | 1.63× |
+| Arabic | gemma3_4b | all (120) | 1.52× | 1.48× | +0.04 (-0.01 to +0.10) | TEA higher (CI includes 0) | 1.47× |
 | Arabic | mistral_7b_v0.1 | all (120) | 3.86× | 3.52× | +0.34 (+0.23 to +0.45) | TEA higher | 3.48× |
 | Arabic | mistral_nemo_tekken | all (120) | 1.33× | 1.25× | +0.08 (+0.04 to +0.12) | TEA higher | 1.25× |
 | Arabic | deepseek_v3 | all (120) | 1.68× | 1.63× | +0.05 (-0.01 to +0.11) | TEA higher (CI includes 0) | 1.62× |
@@ -56,6 +61,7 @@
 | Tamil | o200k_harmony | all (120) | 2.09× | 1.99× | +0.10 (+0.01 to +0.19) | TEA higher | 1.98× |
 | Tamil | qwen2.5_7b | all (120) | 6.55× | 6.21× | +0.34 (+0.01 to +0.66) | TEA higher | 6.10× |
 | Tamil | qwen3_8b | all (120) | 6.55× | 6.21× | +0.34 (+0.01 to +0.66) | TEA higher | 6.10× |
+| Tamil | gemma3_4b | all (120) | 1.61× | 1.48× | +0.13 (+0.06 to +0.19) | TEA higher | 1.47× |
 | Tamil | mistral_7b_v0.1 | all (120) | 6.57× | 5.95× | +0.62 (+0.27 to +0.95) | TEA higher | 5.84× |
 | Tamil | mistral_nemo_tekken | all (120) | 2.32× | 2.20× | +0.12 (+0.02 to +0.21) | TEA higher | 2.17× |
 | Tamil | deepseek_v3 | all (120) | 3.22× | 3.10× | +0.12 (-0.02 to +0.27) | TEA higher (CI includes 0) | 3.07× |
@@ -66,6 +72,7 @@
 | Yoruba | o200k_harmony | all (120) | 2.37× | 2.20× | +0.18 (+0.08 to +0.27) | TEA higher | 2.18× |
 | Yoruba | qwen2.5_7b | all (120) | 3.18× | 2.71× | +0.47 (+0.33 to +0.59) | TEA higher | 2.68× |
 | Yoruba | qwen3_8b | all (120) | 3.18× | 2.71× | +0.47 (+0.33 to +0.59) | TEA higher | 2.68× |
+| Yoruba | gemma3_4b | all (120) | 2.77× | 2.43× | +0.34 (+0.23 to +0.45) | TEA higher | 2.40× |
 | Yoruba | mistral_7b_v0.1 | all (120) | 3.33× | 2.88× | +0.45 (+0.31 to +0.59) | TEA higher | 2.84× |
 | Yoruba | mistral_nemo_tekken | all (120) | 3.27× | 2.84× | +0.43 (+0.28 to +0.57) | TEA higher | 2.81× |
 | Yoruba | deepseek_v3 | all (120) | 3.23× | 2.85× | +0.38 (+0.24 to +0.52) | TEA higher | 2.83× |

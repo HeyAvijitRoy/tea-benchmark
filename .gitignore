@@ -62,3 +62,6 @@ Notes.md
 
 # Local secrets (Hugging Face token etc.)
 .env
+
+# Locally downloaded tokenizer files (licences may not allow redistribution)
+data/tokenizers/

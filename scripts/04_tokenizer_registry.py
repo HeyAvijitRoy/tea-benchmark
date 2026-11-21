@@ -28,6 +28,14 @@ access is refused, is recorded as "skipped" with the reason and the run
 continues. Gated repositories (Llama 3.1, Gemma 3) need `huggingface-cli login`
 (or `hf auth login`) and acceptance of the model licence on its Hugging Face page.
 
+Local copies
+------------
+If data/tokenizers/<label>/ exists, that Hugging Face tokenizer is loaded from
+the folder instead (AutoTokenizer.from_pretrained(<folder>)), and the manifest
+source reads "local copy of <repo>@<revision>". The folder must hold the
+tokenizer files downloaded at the pinned revision. data/tokenizers/ is
+git-ignored and must never be committed.
+
 Usage
 -----
     # Load every registered tokenizer and write the manifest
@@ -60,6 +68,11 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 os.chdir(REPO_ROOT)
 
 MANIFEST_PATH = Path("results") / "extension" / "tokenizer_manifest.csv"
+
+# Optional manually downloaded tokenizer files, one folder per label, e.g.
+# data/tokenizers/gemma3_4b/. Used instead of a download when present.
+# Git-ignored: model licences may not allow redistribution.
+LOCAL_TOKENIZER_DIR = Path("data") / "tokenizers"
 
 RETRY_ATTEMPTS = 5
 RETRY_BASE_DELAY = 5.0   # seconds; doubles after each failed attempt
@@ -206,12 +219,23 @@ def _load_tiktoken(spec: TokenizerSpec):
     return count_fn, info
 
 
+def local_tokenizer_dir(label: str):
+    """data/tokenizers/<label>/ if it exists (manually downloaded files; git-ignored)."""
+    d = LOCAL_TOKENIZER_DIR / label
+    return d if d.is_dir() else None
+
+
 def _load_hf(spec: TokenizerSpec):
     import tokenizers
     import transformers
     from transformers import AutoTokenizer
-    tok = retry_with_backoff(lambda: AutoTokenizer.from_pretrained(
-        spec.source, revision=spec.revision, use_fast=True, trust_remote_code=True))
+    local = local_tokenizer_dir(spec.label)
+    if local is not None:
+        # Files downloaded by hand at spec.revision; nothing is fetched.
+        tok = AutoTokenizer.from_pretrained(str(local), use_fast=True)
+    else:
+        tok = retry_with_backoff(lambda: AutoTokenizer.from_pretrained(
+            spec.source, revision=spec.revision, use_fast=True, trust_remote_code=True))
     count_fn = (lambda text, t=tok: len(t.encode(text, add_special_tokens=False)))
     model_type = ""
     backend = getattr(tok, "backend_tokenizer", None)
@@ -223,6 +247,8 @@ def _load_hf(spec: TokenizerSpec):
         "library_version": f"transformers {transformers.__version__}; "
                            f"tokenizers {tokenizers.__version__}",
     }
+    if local is not None:
+        info["source"] = f"local copy of {spec.source}@{spec.revision}"
     return count_fn, info
 
 
