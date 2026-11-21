@@ -113,7 +113,8 @@ REGISTRY: list[TokenizerSpec] = [
                   "Qwen3.8-27B and Qwen3.8-Flash-Next. Loaded from data/tokenizers/."),
     TokenizerSpec("llama3.1_8b", "hf", "meta-llama/Llama-3.1-8B",
                   "d04e592bb4f6aa9cfee91e2e20afa771667e1d4b",
-                  "gated: needs Hugging Face login and licence acceptance"),
+                  "gated: needs Hugging Face login and licence acceptance. "
+                  "Loaded from data/tokenizers/."),
     TokenizerSpec("gemma3_4b", "hf", "google/gemma-3-4b-it",
                   "093f9f388b31de276ce2de164bdc2081324b9767",
                   "gated: needs Hugging Face login and licence acceptance"),

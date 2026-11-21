@@ -349,7 +349,7 @@ This step extends Section 10 to a pinned registry of current tokenizers. It need
 | `qwen2.5_7b` | `Qwen/Qwen2.5-7B` | `d149729398750b98c0af14eb82c78cfe92750796` |
 | `qwen3_8b` | `Qwen/Qwen3-8B` | `b968826d9c46dd6066d109eabc6255188de91218` |
 | `qwen3.8_2.4t` | `Qwen/Qwen3.8-2.4T-A95B` (reported run used a local copy) | `4f885e51d6bbfee5866446d56d3f96f336c39723` |
-| `llama3.1_8b` | `meta-llama/Llama-3.1-8B` (gated) | `d04e592bb4f6aa9cfee91e2e20afa771667e1d4b` |
+| `llama3.1_8b` | `meta-llama/Llama-3.1-8B` (gated; reported run used a local copy) | `d04e592bb4f6aa9cfee91e2e20afa771667e1d4b` |
 | `gemma3_4b` | `google/gemma-3-4b-it` (gated; reported run used a local copy) | `093f9f388b31de276ce2de164bdc2081324b9767` |
 | `gemma4_e2b` | `google/gemma-4-E2B-it` (reported run used a local copy) | `4adf15748de9e1a0097b6274cee9c15836c41c37` |
 | `mistral_7b_v0.1` | `mistralai/Mistral-7B-v0.1` | `27d67f1b5f57dc0953326b2601d68371d40ea8da` |
@@ -373,7 +373,7 @@ Alternatively, set `HF_TOKEN` in the environment for the session. Never commit a
 
 If a folder `data/tokenizers/<label>/` exists, the registry loads that Hugging Face tokenizer from the folder with `AutoTokenizer.from_pretrained(<folder>)` instead of downloading it, and the manifest records its source as `local copy of <repo>@<revision>`. All other tokenizers load as before. This is useful when Hugging Face cannot be reached from the machine running the scripts, or when gated files were obtained on another machine.
 
-- **Where:** one folder per registry label, e.g. `data/tokenizers/gemma3_4b/`, holding the tokenizer files (`tokenizer.json`, `tokenizer_config.json`, plus `special_tokens_map.json`, `added_tokens.json`, `tokenizer.model`, `vocab.json` and `merges.txt` where the repository has them). The reported run used local copies for `gemma3_4b`, `gemma4_e2b` and `qwen3.8_2.4t`.
+- **Where:** one folder per registry label, e.g. `data/tokenizers/gemma3_4b/`, holding the tokenizer files (`tokenizer.json`, `tokenizer_config.json`, plus `special_tokens_map.json`, `added_tokens.json`, `tokenizer.model`, `vocab.json` and `merges.txt` where the repository has them). The reported run used local copies for `llama3.1_8b`, `gemma3_4b`, `gemma4_e2b` and `qwen3.8_2.4t`.
 - **Git:** `data/tokenizers/` is git-ignored. Some model licences (including Gemma's) do not allow redistributing these files, so never commit them.
 - **Download at the pinned revision** (licence accepted, logged in), on any machine with access:
 
@@ -526,3 +526,35 @@ Expected runtime: a few seconds.
 |---|---|
 | `summary.csv` | Per tokenizer × language: sentences, total tokens, own and reference English totals, reference label, `own_ratio`, `fixed_ratio`, `en_relative` |
 | `review_table.md` | Own / fixed ratio per language and English relative to the reference, one row per tokenizer |
+
+---
+
+## 15. Extension — Llama 3.1 vs `cl100k_base`
+
+The Llama 3 tokenizer is reported to extend `cl100k_base` with about 28,000 tokens. This step checks that relationship on token counts and on the vocabularies themselves.
+
+**Script:** `scripts/09_llama_vs_cl100k.py`  
+**Inputs:** `results/extension/flores_open_weight/per_sentence_counts.csv` (Section 11, with both `cl100k_base` and `llama3.1_8b`); the `cl100k_base` encoding from the local `tiktoken` cache; Llama 3.1's `tokenizer.json` from `data/tokenizers/llama3.1_8b/` or, if absent, from the Hugging Face cache at the pinned revision (no download)
+
+### What the script does
+
+1. For English and each of the five languages: total FLORES-200 dev tokens under both tokenizers, the percentage change, and each language's same-text ratio under both.
+2. For English only: the number and share of the 997 sentences with identical counts, and the minimum, median and maximum of the per-sentence difference (`llama3.1_8b` − `cl100k_base`).
+3. Vocabulary overlap by byte string, with special tokens excluded on both sides. Llama 3.1's byte-level BPE token strings are mapped back to bytes with the GPT-2 byte-to-unicode table and compared with `cl100k_base`'s byte-string ranks. The script reports shared tokens, tokens unique to each, and shared tokens with the same id.
+
+### Run
+
+```bash
+python scripts/09_llama_vs_cl100k.py --self-test
+python scripts/09_llama_vs_cl100k.py
+```
+
+Expected runtime: a few seconds. With `HF_HUB_OFFLINE=1` (PowerShell: `$env:HF_HUB_OFFLINE = "1"`) it runs without network access.
+
+### Outputs (`results/extension/llama_vs_cl100k/`)
+
+| File | Contents |
+|---|---|
+| `summary.csv` | One row per language (English first): sentences, totals under both tokenizers, % change, ratio under both; for English, identical-count sentences and share, and min/median/max per-sentence difference |
+| `vocabulary.csv` | Base vocabulary sizes, `cl100k_base` tokens present in / absent from Llama 3.1, Llama 3.1 tokens not in `cl100k_base`, shared tokens with the same id |
+| `review_table.md` | Both tables in Markdown |

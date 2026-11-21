@@ -59,7 +59,7 @@ Bremen, Germany · August 16, 2026
 | Paper version (LM4UC @ IJCAI 2026) | branch [`ijcai-2026`](https://github.com/HeyAvijitRoy/tea-benchmark/tree/ijcai-2026) (commit `91c5a80`) | Exactly the corpus, scripts, results and figures reported in the paper |
 | Current version | `main` | The paper version plus post-publication extensions (see [Extensions](#extension-flores-200-same-text-comparison)) |
 
-The paper's results are unchanged on `main`: the sections from [Overview](#overview) to [Metrics](#metrics), the files directly under `results/` and `figures/`, and scripts `01`–`02` are identical to the paper version. Everything under `results/extension/`, `figures/extension/`, `results/flores_same_text/`, and scripts `03`–`08` was added after publication and is not part of the paper. To cite or reproduce the paper exactly, use the `ijcai-2026` branch.
+The paper's results are unchanged on `main`: the sections from [Overview](#overview) to [Metrics](#metrics), the files directly under `results/` and `figures/`, and scripts `01`–`02` are identical to the paper version. Everything under `results/extension/`, `figures/extension/`, `results/flores_same_text/`, and scripts `03`–`09` was added after publication and is not part of the paper. To cite or reproduce the paper exactly, use the `ijcai-2026` branch.
 
 ---
 
@@ -177,7 +177,7 @@ Full results for all three encodings are in `results/flores_same_text/`. FLORES-
 
 ### Open-Weight Base-Model Tokenizers on FLORES-200
 
-`scripts/05_flores_open_weight.py` repeats the FLORES-200 measurement on a pinned registry of tokenizers (`scripts/04_tokenizer_registry.py`; revisions in `results/extension/tokenizer_manifest.csv`). The Llama 3.1 tokenizer is registered but gated, and is skipped until Hugging Face access is granted. The Gemma 3 (gated), Gemma 4 and Qwen3.8 tokenizers are loaded from local copies of their files at the pinned revisions (see [`RUNBOOK.md`](RUNBOOK.md), Section 11); those files are not redistributed here.
+`scripts/05_flores_open_weight.py` repeats the FLORES-200 measurement on a pinned registry of tokenizers (`scripts/04_tokenizer_registry.py`; revisions in `results/extension/tokenizer_manifest.csv`). The Llama 3.1 (gated), Gemma 3 (gated), Gemma 4 and Qwen3.8 tokenizers are loaded from local copies of their files at the pinned revisions (see [`RUNBOOK.md`](RUNBOOK.md), Section 11); those files are not redistributed here.
 
 | Tokenizer | Bengali corpus ratio (95% CI) | Bengali > 1.5× | Hindi corpus ratio (95% CI) | Hindi > 1.5× | English tokens / sentence |
 |---|---:|---:|---:|---:|---:|
@@ -188,6 +188,7 @@ Full results for all three encodings are in `results/flores_same_text/`. FLORES-
 | `qwen2.5_7b` | 5.05× (4.99–5.12) | 100% | 4.45× (4.39–4.50) | 100% | 26.3 |
 | `qwen3_8b` | 5.05× (4.99–5.12) | 100% | 4.45× (4.39–4.50) | 100% | 26.3 |
 | `qwen3.8_2.4t` | 3.13× (3.09–3.17) | 100% | 3.12× (3.09–3.16) | 100% | 26.2 |
+| `llama3.1_8b` | 5.79× (5.73–5.86) | 100% | 2.54× (2.51–2.56) | 100% | 25.9 |
 | `gemma3_4b` | 1.21× (1.20–1.22) | 9% | 1.32× (1.30–1.33) | 19% | 26.0 |
 | `gemma4_e2b` | 1.21× (1.20–1.22) | 9% | 1.32× (1.30–1.33) | 19% | 26.0 |
 | `mistral_7b_v0.1` | 4.93× (4.87–4.99) | 100% | 4.58× (4.52–4.64) | 100% | 28.6 |
@@ -195,11 +196,26 @@ Full results for all three encodings are in `results/flores_same_text/`. FLORES-
 | `deepseek_v3` | 2.03× (2.00–2.05) | 95% | 2.82× (2.79–2.85) | 100% | 25.8 |
 | `nemotron` | 2.06× (2.03–2.08) | 95% | 1.79× (1.78–1.81) | 85% | 26.6 |
 
-English costs between 25.6 and 28.6 tokens per sentence under every tokenizer, so the differences in the table come from how each vocabulary handles the target language. Gemma 3 and Gemma 4 give the lowest Bengali and Hindi ratios measured (1.21× and 1.32×; also the lowest for Tamil, 1.47×). Most other tokenizers fall into two groups for Bengali and Hindi: about 1.6–2.1× (`o200k`, Tekken, Nemotron, DeepSeek-V3 for Bengali) and about 4.5–5× or more (`cl100k_base`, Qwen2.5/Qwen3, Mistral-7B). Qwen3.8, with a new 248k-token vocabulary, sits between them at about 3.1× for both languages. Hindi costs more than Bengali under DeepSeek-V3 (2.82× vs 2.03×) and Gemma 3/Gemma 4 (1.32× vs 1.21×); the two are about equal under Qwen3.8, and Bengali costs more under every other tokenizer. Four pairs produce identical counts on every sentence: `o200k_harmony` and `o200k_base`, `qwen3_8b` and `qwen2.5_7b`, `nemotron` and `mistral_nemo_tekken`, and `gemma4_e2b` and `gemma3_4b`.
+English costs between 25.6 and 28.6 tokens per sentence under every tokenizer, so the differences in the table come from how each vocabulary handles the target language. Gemma 3 and Gemma 4 give the lowest Bengali and Hindi ratios measured (1.21× and 1.32×; also the lowest for Tamil, 1.47×). Most other tokenizers fall into two groups for Bengali and Hindi: about 1.6–2.1× (`o200k`, Tekken, Nemotron, DeepSeek-V3 for Bengali) and about 4.5–5× or more (`cl100k_base`, Qwen2.5/Qwen3, Mistral-7B). Qwen3.8, with a new 248k-token vocabulary, sits between them at about 3.1× for both languages. Llama 3.1 stays close to `cl100k_base` for Bengali (5.79× vs 5.84×) but is far lower for Hindi (2.54× vs 4.79×); see the comparison below. Hindi costs more than Bengali under DeepSeek-V3 (2.82× vs 2.03×) and Gemma 3/Gemma 4 (1.32× vs 1.21×); the two are about equal under Qwen3.8, and Bengali costs more under every other tokenizer. Four pairs produce identical counts on every sentence: `o200k_harmony` and `o200k_base`, `qwen3_8b` and `qwen2.5_7b`, `nemotron` and `mistral_nemo_tekken`, and `gemma4_e2b` and `gemma3_4b`.
 
 Because each ratio uses the tokenizer's own English count, `scripts/08_fixed_baseline.py` also divides by a fixed English count (`o200k_base`) for every tokenizer. English costs between 1.000× and 1.116× the `o200k_base` count, so the fixed-baseline ratios are at most about 12% higher than the ratios above (largest for Mistral-7B); results are in `results/extension/fixed_baseline/` and RUNBOOK Section 14.
 
 Results for all five languages are in `results/extension/flores_open_weight/` and `figures/extension/flores_open_weight_ratio.png`.
+
+#### Llama 3.1 vs `cl100k_base`
+
+`scripts/09_llama_vs_cl100k.py` compares the two directly. All 100,256 `cl100k_base` tokens are in Llama 3.1's 128,000-token base vocabulary, with the same ids; Llama 3.1 adds 27,744 tokens. On FLORES-200 dev, English counts are nearly unchanged (identical for 989 of 997 sentences; per-sentence difference −2 to 0), while totals change by language:
+
+| Language | `cl100k_base` tokens | `llama3.1_8b` tokens | Change | Ratio vs English, `cl100k_base` → `llama3.1_8b` |
+|---|---:|---:|---:|---:|
+| English | 25,801 | 25,792 | −0.0% | 1.00× → 1.00× |
+| Bengali | 150,555 | 149,436 | −0.7% | 5.84× → 5.79× |
+| Hindi | 123,680 | 65,407 | −47.1% | 4.79× → 2.54× |
+| Arabic | 78,239 | 42,803 | −45.3% | 3.03× → 1.66× |
+| Tamil | 196,415 | 196,414 | −0.0% | 7.61× → 7.62× |
+| Yoruba | 76,108 | 69,934 | −8.1% | 2.95× → 2.71× |
+
+The added tokens roughly halve the token counts for Hindi and Arabic but leave Bengali and Tamil essentially unchanged. Results are in `results/extension/llama_vs_cl100k/` and RUNBOOK Section 15.
 
 ### Hindi Script-Share Sensitivity on the TEA Corpus
 
@@ -217,6 +233,7 @@ The paper's code-switching sensitivity analysis covers Bengali only. `scripts/06
 | `gemma3_4b` / `gemma4_e2b` | 1.42× | 1.45× | 1.55× | 1.69× |
 | `mistral_nemo_tekken` / `nemotron` | 1.96× | 2.00× | 2.11× | 2.36× |
 | `deepseek_v3` | 3.02× | 3.11× | 3.10× | 3.52× |
+| `llama3.1_8b` | 2.77× | 2.84× | 2.78× | 3.12× |
 | `qwen3.8_2.4t` | 3.45× | 3.55× | 3.50× | 3.97× |
 | `qwen2.5_7b` / `qwen3_8b` | 4.87× | 5.02× | 4.79× | 5.46× |
 | `mistral_7b_v0.1` | 5.20× | 5.37× | 5.08× | 5.79× |
@@ -239,10 +256,11 @@ The comparison table above sets FLORES-200 corpus ratios beside TEA mean TFRs. `
 | `qwen2.5_7b` / `qwen3_8b` | 4.50× / 5.63× | 5.13× | −0.63 / +0.50 | 4.87× / 5.02× | 4.51× | +0.36 / +0.52 |
 | `mistral_7b_v0.1` | 4.44× / 5.57× | 5.02× | −0.58 / +0.55 | 5.20× / 5.37× | 4.66× | +0.54 / +0.71 |
 | `cl100k_base` | 5.18× / 6.51× | 5.91× | −0.73 / +0.60 | 5.25× / 5.43× | 4.85× | +0.40 / +0.58 |
+| `llama3.1_8b` | 5.13× / 6.46× | 5.86× | −0.73 / +0.59 | 2.77× / 2.84× | 2.56× | +0.21 / +0.28 |
 
 † 95% CI includes 0; every other gap in this table has a CI that excludes 0. Clean-only n = 62 (Bengali) and 110 (Hindi) of 120.
 
-With all items, Bengali is the only TEA language whose technical text costs fewer tokens than FLORES-200, under every tokenizer except Gemma 3 and Gemma 4 (+0.07); restricted to clean items, the gap is positive for every tokenizer, and Bengali technical text costs more, as Hindi, Tamil and Yoruba do in all cases. The lower all-item Bengali figure therefore reflects retained English in the translations rather than a property of technical text. Arabic gaps are small (+0.04 to +0.34) and their CIs include 0 for 7 of the 13 tokenizers.
+With all items, Bengali is the only TEA language whose technical text costs fewer tokens than FLORES-200, under every tokenizer except Gemma 3 and Gemma 4 (+0.07); restricted to clean items, the gap is positive for every tokenizer, and Bengali technical text costs more, as Hindi, Tamil and Yoruba do in all cases. The lower all-item Bengali figure therefore reflects retained English in the translations rather than a property of technical text. Arabic gaps are small (+0.04 to +0.34) and their CIs include 0 for 7 of the 14 tokenizers.
 
 Full results for all five languages are in `results/extension/domain_comparison/` and `figures/extension/domain_gap_bengali_hindi.png`. A summary of all three extension tasks, including the tokenizer manifest, is in [`results/extension/EXTENSION_SUMMARY.md`](results/extension/EXTENSION_SUMMARY.md).
 
@@ -284,8 +302,12 @@ tea-benchmark/
 │       ├── domain_comparison/
 │       │   ├── domain_comparison.csv
 │       │   └── review_table.md
-│       └── fixed_baseline/
+│       ├── fixed_baseline/
+│       │   ├── summary.csv
+│       │   └── review_table.md
+│       └── llama_vs_cl100k/
 │           ├── summary.csv
+│           ├── vocabulary.csv
 │           └── review_table.md
 ├── figures/
 │   ├── tfr_by_language_tokenizer.pdf
@@ -307,6 +329,7 @@ tea-benchmark/
 │   ├── 06_hindi_script_share.py
 │   ├── 07_domain_comparison.py
 │   ├── 08_fixed_baseline.py
+│   ├── 09_llama_vs_cl100k.py
 │   ├── generate_tfr_figure.py
 │   ├── log_run.py
 │   └── token_split_table.py

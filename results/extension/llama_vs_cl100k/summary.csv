@@ -1,0 +1,7 @@
+language,n_sentences,tokens_cl100k_base,tokens_llama3.1_8b,pct_change,ratio_cl100k_base,ratio_llama3.1_8b,identical_sentences,identical_share,diff_min,diff_median,diff_max
+English,997,25801,25792,-0.0349,1.0,1.0,989.0,0.992,-2.0,0.0,0.0
+Bengali,997,150555,149436,-0.7432,5.8352,5.7939,,,,,
+Hindi,997,123680,65407,-47.1159,4.7936,2.5359,,,,,
+Arabic,997,78239,42803,-45.292,3.0324,1.6595,,,,,
+Tamil,997,196415,196414,-0.0005,7.6127,7.6153,,,,,
+Yoruba,997,76108,69934,-8.1122,2.9498,2.7115,,,,,

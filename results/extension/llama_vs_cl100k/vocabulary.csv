@@ -1,0 +1,7 @@
+metric,value
+cl100k_base base tokens,100256
+Llama 3.1 base tokens,128000
+cl100k_base tokens present in Llama 3.1,100256
+cl100k_base tokens absent from Llama 3.1,0
+Llama 3.1 tokens not in cl100k_base,27744
+shared tokens with the same id,100256
