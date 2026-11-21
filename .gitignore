@@ -46,3 +46,14 @@ Thumbs.db
 _minted-*/
 
 camera-ready/
+
+# FLORES-200 (external dataset, own license; do not commit)
+data/flores200_dataset/
+data/flores200_dataset.tar.gz
+.venv/
+
+# Local-only reference values and comparisons (may come from unpublished sources)
+data/*.local.csv
+results/flores_same_text/sanity_check.csv
+
+.local/
