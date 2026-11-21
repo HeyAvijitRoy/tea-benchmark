@@ -52,6 +52,15 @@ Bremen, Germany · August 16, 2026
 - **arXiv PDF:** [2608.09046.pdf](https://arxiv.org/pdf/2608.09046)
 - **Repository PDF:** [`Tokenization Equity Audit.pdf`](Tokenization%20Equity%20Audit.pdf)
 
+### Versions
+
+| Version | Where | Contents |
+|---|---|---|
+| Paper version (LM4UC @ IJCAI 2026) | branch [`ijcai-2026`](https://github.com/HeyAvijitRoy/tea-benchmark/tree/ijcai-2026) (commit `91c5a80`) | Exactly the corpus, scripts, results and figures reported in the paper |
+| Current version | `main` | The paper version plus post-publication extensions (see [Extensions](#extension-flores-200-same-text-comparison)) |
+
+The paper's results are unchanged on `main`: the sections from [Overview](#overview) to [Metrics](#metrics), the files directly under `results/` and `figures/`, and scripts `01`–`02` are identical to the paper version. Everything under `results/extension/`, `figures/extension/`, `results/flores_same_text/`, and scripts `03`–`08` was added after publication and is not part of the paper. To cite or reproduce the paper exactly, use the `ijcai-2026` branch.
+
 ---
 
 ## Overview
@@ -145,6 +154,8 @@ ECW estimates how much semantically equivalent content fits into the same token 
 ---
 
 ## Extension: FLORES-200 Same-Text Comparison
+
+> **Post-publication extension.** This section and the subsections below were added after the LM4UC @ IJCAI 2026 paper and are not part of it. The paper version is preserved on the [`ijcai-2026`](https://github.com/HeyAvijitRoy/tea-benchmark/tree/ijcai-2026) branch.
 
 TEA measures a technical tutoring domain. To compare it with general-domain text, `scripts/03_flores_same_text.py` measures the same-text token ratio on the 997 parallel sentences of the FLORES-200 development set (NLLB Team, 2022) for the same six languages, using OpenAI's public `r50k_base`, `cl100k_base`, and `o200k_base` encodings (and, optionally, the two open-weight tokenizers TEA pins).
 
