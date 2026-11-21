@@ -331,3 +331,66 @@ Options: `--languages` restricts the language set (English is always included), 
 | `sanity_check.csv` | Comparison with reference values (only written when a reference CSV is supplied; git-ignored) |
 
 The bootstrap uses 2,000 resamples of sentence pairs with a fixed seed (42), so results are deterministic for a given tokenizer version. The run reported in the README used `tiktoken` 0.12.0.
+
+---
+
+## 11. Extension — Open-Weight Tokenizers on FLORES-200
+
+This step extends Section 10 to a pinned registry of current tokenizers. It needs the FLORES-200 download from Section 10 and does not change any published TEA output.
+
+**Scripts:** `scripts/04_tokenizer_registry.py` (shared registry, imported by Sections 11–13) and `scripts/05_flores_open_weight.py`  
+**Input:** `data/flores200_dataset/dev/` (997 sentences per language)
+
+### Registered tokenizers
+
+| Label | Source | Revision |
+|---|---|---|
+| `r50k_base`, `cl100k_base`, `o200k_base`, `o200k_harmony` | `tiktoken` encodings | fixed by the pinned `tiktoken` package |
+| `qwen2.5_7b` | `Qwen/Qwen2.5-7B` | `d149729398750b98c0af14eb82c78cfe92750796` |
+| `qwen3_8b` | `Qwen/Qwen3-8B` | `b968826d9c46dd6066d109eabc6255188de91218` |
+| `llama3.1_8b` | `meta-llama/Llama-3.1-8B` (gated) | `d04e592bb4f6aa9cfee91e2e20afa771667e1d4b` |
+| `gemma3_4b` | `google/gemma-3-4b-it` (gated) | `093f9f388b31de276ce2de164bdc2081324b9767` |
+| `mistral_7b_v0.1` | `mistralai/Mistral-7B-v0.1` | `27d67f1b5f57dc0953326b2601d68371d40ea8da` |
+| `mistral_nemo_tekken` | `mistralai/Mistral-Nemo-Base-2407` | `a4477a2f977929a969745b69bbd62e03043551a5` |
+| `deepseek_v3` | `deepseek-ai/DeepSeek-V3` | `e815299b0bcbac849fa540c768ef21845365c9eb` |
+| `nemotron` | `nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-Base-BF16` | `434456c9a6753f29d24e23c95d622aaf17111b3b` |
+
+`o200k_base` is the encoding TEA labels `tiktoken_o200k`. Only tokenizer files are downloaded, never model weights.
+
+### Gated tokenizers
+
+`llama3.1_8b` and `gemma3_4b` are gated. To include them, accept each model's licence on its Hugging Face page, then log in once:
+
+```bash
+huggingface-cli login        # or: hf auth login
+```
+
+Alternatively, set `HF_TOKEN` in the environment for the session. Never commit a token; `.env` is git-ignored.
+
+### Run
+
+```bash
+# Offline checks
+python scripts/04_tokenizer_registry.py --self-test
+python scripts/05_flores_open_weight.py --self-test
+
+# Full run (every registered tokenizer)
+python scripts/05_flores_open_weight.py --flores-dir data/flores200_dataset
+
+# A subset
+python scripts/05_flores_open_weight.py --labels o200k_base qwen3_8b deepseek_v3
+```
+
+Each download is retried up to 5 times with exponential backoff (5, 10, 20, 40 s). A tokenizer that still fails, or whose gated access is refused, is marked `skipped` in the manifest with the reason, and the run continues with the rest. Expected runtime: under 1 minute with a warm Hugging Face cache; a few minutes on first download.
+
+### Outputs
+
+| File | Contents |
+|---|---|
+| `results/extension/tokenizer_manifest.csv` | Label, source, revision, vocabulary size, tokenizer type, library version, status (`ran` / `skipped`), skip reason, note |
+| `results/extension/flores_open_weight/summary.csv` | Per language × tokenizer: corpus ratio with 95% bootstrap CI, mean/median/SD of per-sentence ratios, share of sentences above 1.5× and 2.0×, tokens per word, per-word ratio, mean tokens per sentence (language and English) |
+| `results/extension/flores_open_weight/per_sentence_counts.csv` | Token and whitespace-word counts per sentence, language, and tokenizer |
+| `results/extension/flores_open_weight/review_table.md` | Compact Markdown table, sorted by tokenizer then language |
+| `figures/extension/flores_open_weight_ratio.png` / `.pdf` | Corpus ratio by language and tokenizer with CI error bars and a 1.5× reference line |
+
+The loading, counting and summary functions are imported from `03_flores_same_text.py`, so the `o200k_base`, `cl100k_base` and `r50k_base` rows reproduce `results/flores_same_text/summary.csv` exactly.

@@ -164,6 +164,27 @@ Two observations follow. First, a corpus ratio below a threshold can coexist wit
 
 Full results for all three encodings are in `results/flores_same_text/`. FLORES-200 is not redistributed here; see [`RUNBOOK.md`](RUNBOOK.md) for download instructions.
 
+### Open-Weight Base-Model Tokenizers on FLORES-200
+
+`scripts/05_flores_open_weight.py` repeats the FLORES-200 measurement on a pinned registry of tokenizers (`scripts/04_tokenizer_registry.py`; revisions in `results/extension/tokenizer_manifest.csv`). The Llama 3.1 and Gemma 3 tokenizers are registered but gated, and are skipped unless Hugging Face access has been granted.
+
+| Tokenizer | Bengali corpus ratio (95% CI) | Bengali > 1.5× | Hindi corpus ratio (95% CI) | Hindi > 1.5× | English tokens / sentence |
+|---|---:|---:|---:|---:|---:|
+| `r50k_base` | 9.61× (9.49–9.72) | 100% | 7.44× (7.36–7.53) | 100% | 25.8 |
+| `cl100k_base` | 5.84× (5.77–5.90) | 100% | 4.79× (4.74–4.85) | 100% | 25.9 |
+| `o200k_base` | 1.71× (1.69–1.73) | 78% | 1.58× (1.56–1.59) | 59% | 25.6 |
+| `o200k_harmony` | 1.71× (1.69–1.73) | 78% | 1.58× (1.56–1.59) | 59% | 25.6 |
+| `qwen2.5_7b` | 5.05× (4.99–5.12) | 100% | 4.45× (4.39–4.50) | 100% | 26.3 |
+| `qwen3_8b` | 5.05× (4.99–5.12) | 100% | 4.45× (4.39–4.50) | 100% | 26.3 |
+| `mistral_7b_v0.1` | 4.93× (4.87–4.99) | 100% | 4.58× (4.52–4.64) | 100% | 28.6 |
+| `mistral_nemo_tekken` | 2.06× (2.03–2.08) | 95% | 1.79× (1.78–1.81) | 85% | 26.6 |
+| `deepseek_v3` | 2.03× (2.00–2.05) | 95% | 2.82× (2.79–2.85) | 100% | 25.8 |
+| `nemotron` | 2.06× (2.03–2.08) | 95% | 1.79× (1.78–1.81) | 85% | 26.6 |
+
+English costs between 25.6 and 28.6 tokens per sentence under every tokenizer, so the differences in the table come from how each vocabulary handles the target language. Bengali and Hindi ratios fall into two groups: about 1.6–2.1× (`o200k`, Tekken, Nemotron, DeepSeek-V3 for Bengali) and about 4.5–5× or more (`cl100k_base`, Qwen2.5/Qwen3, Mistral-7B). DeepSeek-V3 is the only tokenizer here for which Hindi costs more than Bengali (2.82× vs 2.03×). Three pairs produce identical counts on every sentence: `o200k_harmony` and `o200k_base`, `qwen3_8b` and `qwen2.5_7b`, and `nemotron` and `mistral_nemo_tekken`.
+
+Results for all five languages are in `results/extension/flores_open_weight/` and `figures/extension/flores_open_weight_ratio.png`.
+
 ---
 
 ## Repository Structure
@@ -181,20 +202,32 @@ tea-benchmark/
 │   ├── acm_table.csv
 │   ├── ecw_table.csv
 │   ├── token_split_T1-10.csv
-│   └── flores_same_text/
-│       ├── per_sentence_counts.csv
-│       ├── summary.csv
-│       └── review_table.md
+│   ├── flores_same_text/
+│   │   ├── per_sentence_counts.csv
+│   │   ├── summary.csv
+│   │   └── review_table.md
+│   └── extension/
+│       ├── EXTENSION_SUMMARY.md
+│       ├── tokenizer_manifest.csv
+│       └── flores_open_weight/
+│           ├── per_sentence_counts.csv
+│           ├── summary.csv
+│           └── review_table.md
 ├── figures/
 │   ├── tfr_by_language_tokenizer.pdf
 │   ├── tfr_by_language_tokenizer.png
 │   ├── ecw_by_language.pdf
 │   ├── ecw_by_language.png
-│   └── tokenizer_fragmentation_example.png
+│   ├── tokenizer_fragmentation_example.png
+│   └── extension/
+│       ├── flores_open_weight_ratio.pdf
+│       └── flores_open_weight_ratio.png
 ├── scripts/
 │   ├── 01_quality_check.py
 │   ├── 02_tokenize.py
 │   ├── 03_flores_same_text.py
+│   ├── 04_tokenizer_registry.py
+│   ├── 05_flores_open_weight.py
 │   ├── generate_tfr_figure.py
 │   ├── log_run.py
 │   └── token_split_table.py
