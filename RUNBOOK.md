@@ -558,3 +558,99 @@ Expected runtime: a few seconds. With `HF_HUB_OFFLINE=1` (PowerShell: `$env:HF_H
 | `summary.csv` | One row per language (English first): sentences, totals under both tokenizers, % change, ratio under both; for English, identical-count sentences and share, and min/median/max per-sentence difference |
 | `vocabulary.csv` | Base vocabulary sizes, `cl100k_base` tokens present in / absent from Llama 3.1, Llama 3.1 tokens not in `cl100k_base`, shared tokens with the same id |
 | `review_table.md` | Both tables in Markdown |
+
+---
+
+## 16. Reproducing the Extension from a Fresh Clone
+
+This section brings Sections 10–15 together in the order they must run, and ends with a check that compares the regenerated numbers with the values reported in the README. No GPU is needed, and no model weights are downloaded.
+
+### 16.1 Setup
+
+```bash
+git clone https://github.com/HeyAvijitRoy/tea-benchmark.git
+cd tea-benchmark
+python3 -m venv .venv
+source .venv/bin/activate          # PowerShell: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+`requirements.txt` pins `tiktoken`, `tokenizers`, `transformers` and `huggingface-hub`. Token counts depend on these versions, so install exactly the pinned versions when the aim is to match the reported values.
+
+Download FLORES-200 into `data/flores200_dataset/` as described in Section 10.
+
+### 16.2 Gated tokenizers
+
+Three registered tokenizers need licence acceptance on Hugging Face: `gemma3_4b`, `gemma4_e2b` and `llama3.1_8b`. Either accept the licences and log in (Section 11, *Gated tokenizers*), or place their tokenizer files in `data/tokenizers/<label>/` at the pinned revisions (Section 11, *Local tokenizer files*). Without them, the scripts skip those tokenizers and continue; Section 15 (Llama 3.1 vs `cl100k_base`) then cannot run, and the verification step below reports the affected checks as `SKIPPED` rather than failed.
+
+Keep tokens in the environment or in the git-ignored `.env`. Never commit `.env` or anything under `data/tokenizers/`.
+
+### 16.3 Run order
+
+The TEA results from Sections 3–4 (`results/raw_token_counts.csv`, `results/tfr_by_item.csv`) are already in the repository; re-run Sections 3–4 first only if you want to regenerate them too.
+
+```bash
+# Offline self-tests (synthetic data, no network)
+python scripts/03_flores_same_text.py --self-test
+python scripts/04_tokenizer_registry.py --self-test
+python scripts/05_flores_open_weight.py --self-test
+python scripts/06_hindi_script_share.py --self-test
+python scripts/07_domain_comparison.py --self-test
+python scripts/08_fixed_baseline.py --self-test
+python scripts/09_llama_vs_cl100k.py --self-test
+python scripts/10_verify_extension.py --self-test
+
+# Section 10: tiktoken encodings on FLORES-200
+python scripts/03_flores_same_text.py --flores-dir data/flores200_dataset
+
+# Section 11: all registered tokenizers on FLORES-200 (writes per_sentence_counts.csv,
+# which Sections 14 and 15 read)
+python scripts/05_flores_open_weight.py --flores-dir data/flores200_dataset
+
+# Section 12: Hindi script-share on the TEA corpus
+python scripts/06_hindi_script_share.py
+
+# Section 13: TEA vs FLORES-200 (needs the outputs of Sections 11 and 12)
+python scripts/07_domain_comparison.py
+
+# Section 14: fixed English baseline
+python scripts/08_fixed_baseline.py
+
+# Section 15: Llama 3.1 vs cl100k_base (needs llama3.1_8b)
+python scripts/09_llama_vs_cl100k.py
+
+# Compare the regenerated results with the reported values
+python scripts/10_verify_extension.py
+```
+
+Once every Hugging Face tokenizer is cached or stored locally, set `HF_HUB_OFFLINE=1` (PowerShell: `$env:HF_HUB_OFFLINE = "1"`) to run without network access. With a warm cache the whole sequence takes a few minutes on a laptop CPU; the first run spends most of its time downloading tokenizer files.
+
+### 16.4 Verification
+
+`scripts/10_verify_extension.py` reads the results files and checks 37 reported values: ratios and means within an absolute tolerance of 0.005, and token, vocabulary and sentence counts exactly. It uses only the Python standard library and loads no tokenizer.
+
+| Status | Meaning |
+|---|---|
+| `PASS` | Value within tolerance (or equal, for counts) |
+| `FAIL` | Value outside tolerance, or a row for a non-gated tokenizer is absent |
+| `SKIPPED` | A gated tokenizer was not run, so its row or file is absent |
+| `MISSING` | A results file is absent because its script was not run |
+
+The exit code is 0 when no check fails and 1 otherwise. `--strict` also fails on `SKIPPED` and `MISSING`; `--tolerance` changes the ratio tolerance.
+
+Key reported values that the check covers:
+
+| Quantity | Expected |
+|---|---|
+| `o200k_base` corpus ratio, Bengali (95% CI) | 1.7102 (1.6925–1.7282) |
+| `o200k_base` corpus ratio, Hindi / Yoruba | 1.5773 / 2.1793 |
+| `gemma3_4b` corpus ratio, Bengali / Tamil | 1.2096 / 1.4681 |
+| `gemma4_e2b` corpus ratio, Bengali | 1.2096 (same as Gemma 3) |
+| `llama3.1_8b` corpus ratio, Bengali | 5.7939 |
+| `o200k_base` TEA mean TFR, Bengali / Hindi / Arabic / Tamil / Yoruba | 1.5616 / 1.7190 / 1.4358 / 2.0942 / 2.3725 |
+| `gemma3_4b` English relative to `o200k_base` English (25,536 tokens) | 1.0135 |
+| English tokens, `cl100k_base` → `llama3.1_8b` | 25,801 → 25,792; 989 of 997 sentences identical |
+| Hindi tokens, `cl100k_base` → `llama3.1_8b` | 123,680 → 65,407 (−47.1%) |
+| `cl100k_base` tokens in Llama 3.1, same id / Llama 3.1 tokens added | 100,256 / 27,744 |
+
+Bootstrap intervals use 2,000 resamples with seed 42, so they reproduce exactly. If a check fails, first confirm the installed package versions against `requirements.txt` and the tokenizer revisions in `results/extension/tokenizer_manifest.csv` against the table in Section 11.

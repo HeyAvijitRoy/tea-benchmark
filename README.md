@@ -264,6 +264,16 @@ With all items, Bengali is the only TEA language whose technical text costs fewe
 
 Full results for all five languages are in `results/extension/domain_comparison/` and `figures/extension/domain_gap_bengali_hindi.png`. A summary of all three extension tasks, including the tokenizer manifest, is in [`results/extension/EXTENSION_SUMMARY.md`](results/extension/EXTENSION_SUMMARY.md).
 
+### Reproducing the Extension
+
+All extension results can be regenerated from a fresh clone on a CPU, without model weights. After installing the pinned requirements and downloading FLORES-200 (RUNBOOK Section 10), run scripts `03` to `09` in order and then compare the output with the reported values:
+
+```bash
+python scripts/10_verify_extension.py
+```
+
+The check covers 37 values, among them the `o200k_base` Bengali ratio of 1.7102 (95% CI 1.6925–1.7282), the Gemma 3 Bengali ratio of 1.2096, and the Llama 3.1 vs `cl100k_base` English totals (25,801 → 25,792, with 989 of 997 sentences identical). It prints `PASS`, `FAIL`, `SKIPPED` or `MISSING` for each value. Gemma 3, Gemma 4 and Llama 3.1 need licence acceptance on Hugging Face; if they are not available, their checks are reported as `SKIPPED` and the remaining checks still run. The full run order, gated-tokenizer setup, offline use and the table of expected values are in [RUNBOOK Section 16](RUNBOOK.md#16-reproducing-the-extension-from-a-fresh-clone).
+
 ---
 
 ## Repository Structure
@@ -330,6 +340,7 @@ tea-benchmark/
 │   ├── 07_domain_comparison.py
 │   ├── 08_fixed_baseline.py
 │   ├── 09_llama_vs_cl100k.py
+│   ├── 10_verify_extension.py
 │   ├── generate_tfr_figure.py
 │   ├── log_run.py
 │   └── token_split_table.py
@@ -372,6 +383,10 @@ python scripts/generate_tfr_figure.py
 # 6. Optional extension: FLORES-200 same-text comparison
 #    (download FLORES-200 first; see RUNBOOK.md, Section 10)
 python scripts/03_flores_same_text.py --flores-dir data/flores200_dataset
+
+# 7. Optional: full extension run and reproduction check
+#    (run order and gated tokenizers: RUNBOOK.md, Section 16)
+python scripts/10_verify_extension.py
 ```
 
 For full reproducible procedures, output documentation, and troubleshooting, see [`RUNBOOK.md`](RUNBOOK.md).
